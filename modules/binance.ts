@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { binanceConfig } from '../config';
 import { makeLogger } from '../utils/logger';
 import axios from 'axios';
-import { getBaseWalletClient } from '../utils/chains/baseClient';
+import { getBaseWalletClient } from '../utils/clients/baseClient';
 
 export class Binance {
   binanceEndpoint: string =
