@@ -2,17 +2,17 @@ import { Hex, parseEther } from 'viem';
 import { makeLogger } from '../utils/logger';
 import { getEthWalletClient } from '../utils/clients/ethClient';
 import { sleep } from '../utils/common';
-import { zoraBridgeAbi } from '../data/abi/zora-bridge';
+import { baseBridgeAbi } from '../data/abi/base-bridge';
 
-export class ZoraBridge {
+export class BaseBridge {
   privateKey: Hex;
-  bridgeContractAddress: Hex = '0x1a0ad011913A150f69f6A19DF447A0CfD9551054';
+  bridgeContractAddress: Hex = '0x49048044D57e1C92A77f79988d21Fa8fAF74E97e';
   logger: any;
   wallet: any;
 
   constructor(privateKey: Hex) {
     this.privateKey = privateKey;
-    this.logger = makeLogger('Zora bridge');
+    this.logger = makeLogger('Base bridge');
     this.wallet = getEthWalletClient(privateKey);
   }
 
@@ -20,8 +20,16 @@ export class ZoraBridge {
     const value: bigint = BigInt(parseEther(amount));
 
     this.logger.info(
-      `${this.wallet.account.address} | Zora bridge ${amount} ETH`
+      `${this.wallet.account.address} | Base bridge ${amount} ETH`
     );
+
+    const args: readonly [
+      `0x${string}`,
+      bigint,
+      bigint,
+      boolean,
+      `0x${string}`
+    ] = [this.wallet.account.address, value, BigInt(100000), false, '0x'];
 
     let isSuccess = false;
     let retryCount = 1;
@@ -30,22 +38,14 @@ export class ZoraBridge {
       try {
         const txHash = await this.wallet.writeContract({
           address: this.bridgeContractAddress,
-          abi: zoraBridgeAbi,
+          abi: baseBridgeAbi,
           functionName: 'depositTransaction',
-          args: [
-            this.wallet.account.address,
-            value.toString(),
-            BigInt(100000),
-            false,
-            '0x',
-          ],
-          value: value,
+          args: args,
         });
 
         isSuccess = true;
-
         this.logger.info(
-          `${this.wallet.account.address} | Zora bridge done: https://etherscan.io/tx/${txHash}`
+          `${this.wallet.account.address} | Base bridge done: https://etherscan.io/tx/${txHash}`
         );
       } catch (error) {
         this.logger.info(`${this.wallet.account.address} | Error ${error}`);
@@ -64,7 +64,7 @@ export class ZoraBridge {
         }
 
         this.logger.error(
-          `${this.wallet.account.address} | Zora bridge error: ${error.shortMessage}`
+          `${this.wallet.account.address} | Base bridge error: ${error.shortMessage}`
         );
       }
     }

@@ -1,9 +1,11 @@
 import {
+  baseBridgeConfig,
   binanceConfig,
   bungeeConfig,
   generalConfig,
   zoraBridgeConfig,
 } from './config';
+import { BaseBridge } from './modules/baseBridge';
 import { Binance } from './modules/binance';
 import { Bungee } from './modules/bungee';
 import { Mintfun } from './modules/mintfun';
@@ -63,6 +65,35 @@ async function bungeeModule() {
   }
 }
 
+async function baseBridgeModule() {
+  const logger = makeLogger('Base bridge');
+  for (let privateKey of privateKeys) {
+    const wallet = getEthWalletClient(privateKeyConvert(privateKey));
+    if (
+      (await getAddressTxCount(wallet.account.address)) >=
+      generalConfig.maxAddressTxCount
+    ) {
+      logger.info(
+        `Address ${wallet.account.address} has ${generalConfig.maxAddressTxCount} or more transactions, skip`
+      );
+      continue;
+    }
+    const bridge = new BaseBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      baseBridgeConfig.bridgeFrom,
+      baseBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await bridge.bridge(sum.toString());
+    }
+
+    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
 async function zoraBridgeModule() {
   const logger = makeLogger('Zora bridge');
   for (let privateKey of privateKeys) {
@@ -103,6 +134,9 @@ async function startMenu() {
       break;
     case 'bungee':
       await bungeeModule();
+      break;
+    case 'base_bridge':
+      await baseBridgeModule();
       break;
     case 'zora_bridge':
       await zoraBridgeModule();
