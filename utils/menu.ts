@@ -10,6 +10,7 @@ export const entryPoint = async () => {
         { name: 'Binance withdraw', value: 'binance' },
         { name: 'Mintfun', value: 'mintfun' },
         { name: 'Bungee', value: 'bungee' },
+        { name: 'Wrap eth', value: 'wrap_eth' },
         { name: 'Base bridge', value: 'base_bridge' },
         { name: 'Zora bridge', value: 'zora_bridge' },
       ],

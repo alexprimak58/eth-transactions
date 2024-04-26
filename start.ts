@@ -3,10 +3,12 @@ import {
   binanceConfig,
   bungeeConfig,
   generalConfig,
+  wrapConfig,
   zoraBridgeConfig,
 } from './config';
 import { BaseBridge } from './modules/baseBridge';
 import { Binance } from './modules/binance';
+import { WrapEth } from './modules/wrapEth';
 import { Bungee } from './modules/bungee';
 import { Mintfun } from './modules/mintfun';
 import { ZoraBridge } from './modules/zoraBridge';
@@ -32,6 +34,7 @@ async function binanceModule() {
       binanceConfig.withdrawTo
     );
     const binance = new Binance(privateKeyConvert(privateKey));
+
     await binance.withdraw(sum.toString());
 
     const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
@@ -45,7 +48,10 @@ async function mintfunModule() {
   for (let privateKey of privateKeys) {
     const mintfun = new Mintfun(privateKeyConvert(privateKey));
 
-    await mintfun.mint();
+    if (await waitGas()) {
+      await mintfun.mint();
+    }
+
     const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
@@ -58,7 +64,25 @@ async function bungeeModule() {
     const merkly = new Bungee(privateKeyConvert(privateKey));
     const sum = randomFloat(bungeeConfig.refuelFrom, bungeeConfig.refuelTo);
 
-    await merkly.refuel(sum.toString());
+    if (await waitGas()) {
+      await merkly.refuel(sum.toString());
+    }
+
+    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function wrapEthModule() {
+  const logger = makeLogger('Wrap eth');
+  for (let privateKey of privateKeys) {
+    const wrap = new WrapEth(privateKeyConvert(privateKey));
+    const sum = randomFloat(wrapConfig.depositFrom, wrapConfig.depositTo);
+
+    if (await waitGas()) {
+      await wrap.wrap(sum.toString());
+    }
     const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
@@ -68,16 +92,6 @@ async function bungeeModule() {
 async function baseBridgeModule() {
   const logger = makeLogger('Base bridge');
   for (let privateKey of privateKeys) {
-    const wallet = getEthWalletClient(privateKeyConvert(privateKey));
-    if (
-      (await getAddressTxCount(wallet.account.address)) >=
-      generalConfig.maxAddressTxCount
-    ) {
-      logger.info(
-        `Address ${wallet.account.address} has ${generalConfig.maxAddressTxCount} or more transactions, skip`
-      );
-      continue;
-    }
     const bridge = new BaseBridge(privateKeyConvert(privateKey));
     const sum = randomFloat(
       baseBridgeConfig.bridgeFrom,
@@ -97,16 +111,6 @@ async function baseBridgeModule() {
 async function zoraBridgeModule() {
   const logger = makeLogger('Zora bridge');
   for (let privateKey of privateKeys) {
-    const wallet = getEthWalletClient(privateKeyConvert(privateKey));
-    if (
-      (await getAddressTxCount(wallet.account.address)) >=
-      generalConfig.maxAddressTxCount
-    ) {
-      logger.info(
-        `Address ${wallet.account.address} has ${generalConfig.maxAddressTxCount} or more transactions, skip`
-      );
-      continue;
-    }
     const bridge = new ZoraBridge(privateKeyConvert(privateKey));
     const sum = randomFloat(
       zoraBridgeConfig.bridgeFrom,
@@ -134,6 +138,9 @@ async function startMenu() {
       break;
     case 'bungee':
       await bungeeModule();
+      break;
+    case 'wrap_eth':
+      await wrapEthModule();
       break;
     case 'base_bridge':
       await baseBridgeModule();

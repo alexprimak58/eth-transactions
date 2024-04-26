@@ -10,7 +10,6 @@ import { sleep } from '../utils/common';
 import { submitTx } from '../utils/mintfun';
 import { mintfunAbi } from '../data/abi/mintfun';
 import { refill } from '../utils/refill';
-import { waitGas } from '../utils/getCurrentGas';
 
 export class Mintfun {
   privateKey: Hex;
@@ -24,8 +23,6 @@ export class Mintfun {
   }
 
   async mint() {
-    await waitGas();
-
     const ethWallet = getEthWalletClient(this.privateKey);
 
     const contract: Hex = mintfunZerionContract;

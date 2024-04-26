@@ -36,6 +36,11 @@ export const bungeeConfig = {
   destinationNetwork: 'random', //arbitrum, base, optimism, zksync
 };
 
+export const wrapConfig = {
+  depositFrom: 0.001,
+  depositTo: 0.0012,
+};
+
 export const baseBridgeConfig = {
   bridgeFrom: 0.001,
   bridgeTo: 0.0012,
