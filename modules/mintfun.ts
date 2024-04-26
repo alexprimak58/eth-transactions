@@ -55,7 +55,6 @@ export class Mintfun {
           address: contract,
           abi: mintfunAbi,
           functionName: 'mint',
-          args: [BigInt(1)],
         });
         isSuccess = true;
         this.logger.info(

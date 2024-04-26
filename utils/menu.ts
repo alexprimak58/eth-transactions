@@ -6,7 +6,10 @@ export const entryPoint = async () => {
       name: 'choice',
       type: 'list',
       message: 'Choice:',
-      choices: [{ name: 'Binance withdraw', value: 'binance' }],
+      choices: [
+        { name: 'Binance withdraw', value: 'binance' },
+        { name: 'Mintfun', value: 'mintfun' },
+      ],
       loop: false,
     },
   ];

@@ -6,7 +6,7 @@ import { makeLogger } from './utils/logger';
 import { entryPoint } from './utils/menu';
 import { privateKeyConvert, readWallets } from './utils/wallet';
 
-let privateKeys = readWallets('./keys.tsx');
+let privateKeys = readWallets('./keys.txt');
 
 if (generalConfig.shuffleWallets) {
   shuffle(privateKeys);
