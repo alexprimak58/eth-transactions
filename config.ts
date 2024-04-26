@@ -6,6 +6,7 @@ export const generalConfig = {
   shuffleWallets: false,
   shuffleCustomModules: true,
   maxGas: 15,
+  maxAddressTxCount: 100,
   countModulesFrom: 1,
   countModulesTo: 3,
   customModules: ['l2telegraph', 'mintfun', 'uniswap'],
@@ -33,4 +34,9 @@ export const bungeeConfig = {
   refuelFrom: 0.0025, // min: 0.0025
   refuelTo: 0.0035,
   destinationNetwork: 'random', //arbitrum, base, optimism, zksync
+};
+
+export const zoraBridgeConfig = {
+  bridgeFrom: 0.001,
+  bridgeTo: 0.0012,
 };
