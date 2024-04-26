@@ -31,22 +31,22 @@ export const binanceConfig = {
 };
 
 export const bungeeConfig = {
-  refuelFrom: 0.0025, // min: 0.0025
-  refuelTo: 0.0035,
+  refuelFrom: 0.00005,
+  refuelTo: 0.00016,
   destinationNetwork: 'random', //arbitrum, base, optimism, zksync
 };
 
 export const wrapConfig = {
-  depositFrom: 0.001,
-  depositTo: 0.0012,
+  depositFrom: 0.00005,
+  depositTo: 0.00016,
 };
 
 export const baseBridgeConfig = {
-  bridgeFrom: 0.001,
-  bridgeTo: 0.0012,
+  bridgeFrom: 0.00005,
+  bridgeTo: 0.00016,
 };
 
 export const zoraBridgeConfig = {
-  bridgeFrom: 0.001,
-  bridgeTo: 0.0012,
+  bridgeFrom: 0.00005,
+  bridgeTo: 0.00016,
 };

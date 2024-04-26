@@ -24,11 +24,15 @@ export class Bungee {
   networks = [
     {
       name: 'arbitrum',
-      id: 8453,
+      id: 42161,
     },
     {
       name: 'base',
-      id: 42161,
+      id: 8453,
+    },
+    {
+      name: 'gnosis',
+      id: 100,
     },
     {
       name: 'optimism',
@@ -77,7 +81,6 @@ export class Bungee {
   }
 
   async refuel(amount: string) {
-    //await waitGas()
     const value: bigint = BigInt(parseEther(amount));
     this.logger.info(
       `${this.walletAddress} | Bungee refuel to ${this.randomNetwork.name}`
