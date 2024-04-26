@@ -28,3 +28,9 @@ export const binanceConfig = {
   withdrawTo: 0.0013,
   useRefill: false,
 };
+
+export const bungeeConfig = {
+  refuelFrom: 0.0025, // min: 0.0025
+  refuelTo: 0.0035,
+  destinationNetwork: 'random', //arbitrum, base, optimism, zksync
+};

@@ -9,6 +9,7 @@ export const entryPoint = async () => {
       choices: [
         { name: 'Binance withdraw', value: 'binance' },
         { name: 'Mintfun', value: 'mintfun' },
+        { name: 'Bungee', value: 'bungee' },
       ],
       loop: false,
     },

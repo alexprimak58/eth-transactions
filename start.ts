@@ -1,5 +1,6 @@
-import { binanceConfig, generalConfig } from './config';
+import { binanceConfig, bungeeConfig, generalConfig } from './config';
 import { Binance } from './modules/binance';
+import { Bungee } from './modules/bungee';
 import { Mintfun } from './modules/mintfun';
 import { random, randomFloat, shuffle, sleep } from './utils/common';
 import { makeLogger } from './utils/logger';
@@ -40,6 +41,19 @@ async function mintfunModule() {
   }
 }
 
+async function bungeeModule() {
+  const logger = makeLogger('Bungee');
+  for (let privateKey of privateKeys) {
+    const sum = randomFloat(bungeeConfig.refuelFrom, bungeeConfig.refuelTo);
+    const merkly = new Bungee(privateKeyConvert(privateKey));
+
+    await merkly.refuel(sum.toString());
+    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
 async function startMenu() {
   let mode = await entryPoint();
   switch (mode) {
@@ -48,6 +62,9 @@ async function startMenu() {
       break;
     case 'mintfun':
       await mintfunModule();
+      break;
+    case 'bungee':
+      await bungeeModule();
       break;
   }
 }
