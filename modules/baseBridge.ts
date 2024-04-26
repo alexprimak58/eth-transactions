@@ -45,7 +45,7 @@ export class BaseBridge {
 
         isSuccess = true;
         this.logger.info(
-          `${this.wallet.account.address} | Base bridge done: https://etherscan.io/tx/${txHash}`
+          `${this.wallet.account.address} | Success bridge on Base: https://etherscan.io/tx/${txHash}`
         );
       } catch (error) {
         this.logger.info(`${this.wallet.account.address} | Error ${error}`);

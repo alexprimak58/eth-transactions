@@ -33,7 +33,12 @@ export const binanceConfig = {
 export const bungeeConfig = {
   refuelFrom: 0.00005,
   refuelTo: 0.00016,
-  destinationNetwork: 'random', //arbitrum, base, optimism, zksync
+  destinationNetwork: 'random', //arbitrum, base, gnosis, optimism, zksync
+};
+
+export const blurConfig = {
+  depositFrom: 0.00005,
+  depositTo: 0.00016,
 };
 
 export const wrapConfig = {

@@ -1,6 +1,7 @@
 import {
   baseBridgeConfig,
   binanceConfig,
+  blurConfig,
   bungeeConfig,
   generalConfig,
   wrapConfig,
@@ -19,6 +20,7 @@ import { waitGas } from './utils/getCurrentGas';
 import { makeLogger } from './utils/logger';
 import { entryPoint } from './utils/menu';
 import { privateKeyConvert, readWallets } from './utils/wallet';
+import { BlurDeposit } from './modules/blurDeposit';
 
 let privateKeys = readWallets('./keys.txt');
 
@@ -68,6 +70,21 @@ async function bungeeModule() {
       await merkly.refuel(sum.toString());
     }
 
+    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function blurDepositModule() {
+  const logger = makeLogger('Blur deposit');
+  for (let privateKey of privateKeys) {
+    const deposit = new BlurDeposit(privateKeyConvert(privateKey));
+    const sum = randomFloat(blurConfig.depositFrom, blurConfig.depositTo);
+
+    if (await waitGas()) {
+      await deposit.deposit(sum.toString());
+    }
     const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
@@ -141,6 +158,9 @@ async function startMenu() {
       break;
     case 'wrap_eth':
       await wrapEthModule();
+      break;
+    case 'blur_deposit':
+      await blurDepositModule();
       break;
     case 'base_bridge':
       await baseBridgeModule();

@@ -54,4 +54,5 @@ export const blurAbi = [
   },
   { stateMutability: 'payable', type: 'fallback' },
   { stateMutability: 'payable', type: 'receive' },
+  { func: 'deposit', params: [] },
 ] as const;

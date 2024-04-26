@@ -2,25 +2,25 @@ import { Hex, parseEther } from 'viem';
 import { makeLogger } from '../utils/logger';
 import { getEthWalletClient } from '../utils/clients/ethClient';
 import { sleep } from '../utils/common';
-import { zoraBridgeAbi } from '../data/abi/zora-bridge';
+import { wrapAbi } from '../data/abi/wrap';
 
-export class ZoraBridge {
+export class BlurDeposit {
   privateKey: Hex;
-  bridgeContractAddress: Hex = '0x1a0ad011913A150f69f6A19DF447A0CfD9551054';
+  depositContractAddress: Hex = '0x0000000000A39bb272e79075ade125fd351887Ac';
   logger: any;
   wallet: any;
 
   constructor(privateKey: Hex) {
     this.privateKey = privateKey;
-    this.logger = makeLogger('Zora bridge');
+    this.logger = makeLogger('Blur deposit');
     this.wallet = getEthWalletClient(privateKey);
   }
 
-  async bridge(amount: string) {
+  async deposit(amount: string) {
     const value: bigint = BigInt(parseEther(amount));
 
     this.logger.info(
-      `${this.wallet.account.address} | Zora bridge ${amount} ETH`
+      `${this.wallet.account.address} | Blur deposit ${amount} ETH`
     );
 
     let isSuccess = false;
@@ -29,23 +29,17 @@ export class ZoraBridge {
     while (!isSuccess) {
       try {
         const txHash = await this.wallet.writeContract({
-          address: this.bridgeContractAddress,
-          abi: zoraBridgeAbi,
-          functionName: 'depositTransaction',
-          args: [
-            this.wallet.account.address,
-            value.toString(),
-            BigInt(100000),
-            false,
-            '0x',
-          ],
+          address: this.depositContractAddress,
+          abi: wrapAbi,
+          functionName: 'deposit',
           value: value,
+          args: [],
         });
 
         isSuccess = true;
 
         this.logger.info(
-          `${this.wallet.account.address} | Success bridge on Zora: https://etherscan.io/tx/${txHash}`
+          `${this.wallet.account.address} | Success blur deposit: https://etherscan.io/tx/${txHash}`
         );
       } catch (error) {
         this.logger.info(`${this.wallet.account.address} | Error ${error}`);
@@ -59,12 +53,12 @@ export class ZoraBridge {
         } else {
           isSuccess = true;
           this.logger.info(
-            `${this.wallet.account.address} | Bridge unsuccessful, skip`
+            `${this.wallet.account.address} | Blur deposit unsuccessful, skip`
           );
         }
 
         this.logger.error(
-          `${this.wallet.account.address} | Zora bridge error: ${error.shortMessage}`
+          `${this.wallet.account.address} | Blur deposit error: ${error.shortMessage}`
         );
       }
     }
