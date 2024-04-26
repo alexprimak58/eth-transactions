@@ -2,7 +2,7 @@ import { Hex, parseEther } from 'viem';
 import { makeLogger } from '../utils/logger';
 import { getEthWalletClient } from '../utils/clients/ethClient';
 import { sleep } from '../utils/common';
-import { wrapAbi } from '../data/abi/wrap';
+import { blurAbi } from '../data/abi/blur';
 
 export class BlurDeposit {
   privateKey: Hex;
@@ -30,7 +30,7 @@ export class BlurDeposit {
       try {
         const txHash = await this.wallet.writeContract({
           address: this.depositContractAddress,
-          abi: wrapAbi,
+          abi: blurAbi,
           functionName: 'deposit',
           value: value,
           args: [],
