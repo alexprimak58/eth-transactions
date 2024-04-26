@@ -5,6 +5,7 @@ import {
   bungeeConfig,
   generalConfig,
   wrapConfig,
+  zkSyncLiteConfig,
   zoraBridgeConfig,
 } from './config';
 import { BaseBridge } from './modules/baseBridge';
@@ -13,14 +14,13 @@ import { WrapEth } from './modules/wrapEth';
 import { Bungee } from './modules/bungee';
 import { Mintfun } from './modules/mintfun';
 import { ZoraBridge } from './modules/zoraBridge';
-import { getEthWalletClient } from './utils/clients/ethClient';
 import { random, randomFloat, shuffle, sleep } from './utils/common';
-import { getAddressTxCount } from './utils/getAddressTxCount';
 import { waitGas } from './utils/getCurrentGas';
 import { makeLogger } from './utils/logger';
 import { entryPoint } from './utils/menu';
 import { privateKeyConvert, readWallets } from './utils/wallet';
 import { BlurDeposit } from './modules/blurDeposit';
+import { ZkSyncLiteDeposit } from './modules/zkSyncLiteDeposit';
 
 let privateKeys = readWallets('./keys.txt');
 
@@ -81,6 +81,24 @@ async function blurDepositModule() {
   for (let privateKey of privateKeys) {
     const deposit = new BlurDeposit(privateKeyConvert(privateKey));
     const sum = randomFloat(blurConfig.depositFrom, blurConfig.depositTo);
+
+    if (await waitGas()) {
+      await deposit.deposit(sum.toString());
+    }
+    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function zkSyncLiteDepositModule() {
+  const logger = makeLogger('ZkSync Lite deposit');
+  for (let privateKey of privateKeys) {
+    const deposit = new ZkSyncLiteDeposit(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      zkSyncLiteConfig.depositFrom,
+      zkSyncLiteConfig.depositTo
+    );
 
     if (await waitGas()) {
       await deposit.deposit(sum.toString());
@@ -161,6 +179,9 @@ async function startMenu() {
       break;
     case 'blur_deposit':
       await blurDepositModule();
+      break;
+    case 'zksync_lite_deposit':
+      await zkSyncLiteDepositModule();
       break;
     case 'base_bridge':
       await baseBridgeModule();

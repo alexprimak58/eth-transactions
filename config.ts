@@ -41,6 +41,11 @@ export const blurConfig = {
   depositTo: 0.00016,
 };
 
+export const zkSyncLiteConfig = {
+  depositFrom: 0.00005,
+  depositTo: 0.00016,
+};
+
 export const wrapConfig = {
   depositFrom: 0.00005,
   depositTo: 0.00016,

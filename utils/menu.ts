@@ -12,6 +12,7 @@ export const entryPoint = async () => {
         { name: 'Bungee', value: 'bungee' },
         { name: 'Wrap eth', value: 'wrap_eth' },
         { name: 'Blur deposit', value: 'blur_deposit' },
+        { name: 'ZkSync Lite deposit', value: 'zksync_lite_deposit' },
         { name: 'Base bridge', value: 'base_bridge' },
         { name: 'Zora bridge', value: 'zora_bridge' },
       ],
