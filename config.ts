@@ -27,8 +27,8 @@ export const binanceConfig = {
   secret: '',
   proxy: '',
   destNetwork: 'random', //or set 1 network
-  networks: ['Arb', 'Base', 'Op', 'zkSyncEra'],
-  coin: 'ETH', //in upper case
+  destNetworks: ['Arb', 'Base', 'Op', 'zkSyncEra'],
+  coin: 'ETH',
   withdrawFrom: 0.001, // min: 0.001
   withdrawTo: 0.0013,
   useRefill: false,
@@ -40,8 +40,8 @@ export const okxConfig = {
   passphrase: '',
   proxy: '',
   destNetwork: 'random', //or set 1 network
-  networks: ['Arb', 'Base', 'Op', 'zkSyncEra'],
-  coin: 'ETH', //in upper case
+  destNetworks: ['Arb', 'Base', 'Op', 'zkSyncEra'],
+  coin: 'ETH',
   withdrawFrom: 0.001, // min: 0.001
   withdrawTo: 0.0013,
   useRefill: false,
@@ -50,7 +50,7 @@ export const okxConfig = {
 export const bungeeConfig = {
   refuelFrom: 0.00005,
   refuelTo: 0.00016,
-  destinationNetwork: 'random', //arbitrum, base, gnosis, optimism, zksync
+  destNetwork: 'random', //arbitrum, base, gnosis, optimism, zksync
 };
 
 export const blurConfig = {

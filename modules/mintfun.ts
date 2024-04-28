@@ -3,7 +3,7 @@ import { makeLogger } from '../utils/logger';
 import {
   getEthWalletClient,
   getPublicEthClient,
-} from '../utils/clients/ethClient';
+} from '../utils/clients/ethereum';
 import { mintfunZerionContract } from '../data/mintfun-contract';
 import { binanceConfig } from '../config';
 import { sleep } from '../utils/common';

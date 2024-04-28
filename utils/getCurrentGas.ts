@@ -1,5 +1,5 @@
 import { formatGwei } from 'viem';
-import { getPublicEthClient } from './clients/ethClient';
+import { getPublicEthClient } from './clients/ethereum';
 import { bridgeConfig, generalConfig } from '../config';
 import { makeLogger } from './logger';
 import { sleep } from './common';

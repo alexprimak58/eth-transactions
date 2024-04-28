@@ -1,6 +1,6 @@
 import { Hex } from 'viem';
 import { makeLogger } from '../utils/logger';
-import { getEthWalletClient } from '../utils/clients/ethClient';
+import { getEthWalletClient } from '../utils/clients/ethereum';
 import ccxt from 'ccxt';
 import { okxConfig } from '../config';
 import { random } from '../utils/common';
@@ -30,15 +30,13 @@ export class OKX {
 
     if (okxConfig.destNetwork === 'random') {
       this.network =
-        okxConfig.networks[random(0, okxConfig.networks.length - 1)];
+        okxConfig.destNetworks[random(0, okxConfig.destNetworks.length - 1)];
     } else {
-      this.network = okxConfig.networks.find(
-        (network) => network === okxConfig.destNetwork
-      );
+      this.network = okxConfig.destNetwork;
     }
 
-    this.coin = okxConfig.coin.toUpperCase();
     this.network = this.network.toUpperCase();
+    this.coin = okxConfig.coin.toUpperCase();
   }
 
   async getWithdrawalFee(symbolWithdraw: string, chainName: string) {
@@ -61,7 +59,7 @@ export class OKX {
     let fee = await this.getWithdrawalFee(this.coin, this.network);
     const address = this.wallet.account.address;
     const network = this.network;
-    const coin = this.coin;
+    const coin = this.coin.toUpperCase();
     const value = parseFloat(amount).toFixed(5);
 
     this.logger.info(

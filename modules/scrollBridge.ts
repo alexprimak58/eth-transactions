@@ -3,7 +3,7 @@ import { makeLogger } from '../utils/logger';
 import {
   getEthWalletClient,
   getPublicEthClient,
-} from '../utils/clients/ethClient';
+} from '../utils/clients/ethereum';
 import { scrollBridgeAbi } from '../data/abi/scroll-bridge';
 import { sleep } from '../utils/common';
 import { scrollFeeAbi } from '../data/abi/scroll-fee';

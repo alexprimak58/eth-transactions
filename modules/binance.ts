@@ -5,7 +5,7 @@ import { makeLogger } from '../utils/logger';
 import axios from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { random, sleep } from '../utils/common';
-import { getEthWalletClient } from '../utils/clients/ethClient';
+import { getEthWalletClient } from '../utils/clients/ethereum';
 
 export class Binance {
   privateKey: Hex;
@@ -23,15 +23,15 @@ export class Binance {
 
     if (binanceConfig.destNetwork === 'random') {
       this.network =
-        binanceConfig.networks[random(0, binanceConfig.networks.length - 1)];
+        binanceConfig.destNetworks[
+          random(0, binanceConfig.destNetworks.length - 1)
+        ];
     } else {
-      this.network = binanceConfig.networks.find(
-        (network) => network === binanceConfig.destNetwork
-      );
+      this.network = binanceConfig.destNetwork;
     }
 
-    this.coin = binanceConfig.coin.toUpperCase();
     this.network = this.network.toUpperCase();
+    this.coin = binanceConfig.coin.toUpperCase();
   }
 
   async withdraw(amount: string) {
@@ -39,8 +39,8 @@ export class Binance {
     let retry = 0;
 
     const address = this.wallet.account.address;
-    const network = this.network;
-    const coin = this.coin;
+    const network = this.network.toUpperCase();
+    const coin = this.coin.toUpperCase();
     const value = parseFloat(amount).toFixed(5);
 
     while (!isSuccess) {

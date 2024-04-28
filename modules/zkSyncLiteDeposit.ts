@@ -1,6 +1,6 @@
 import { Hex, parseEther } from 'viem';
 import { makeLogger } from '../utils/logger';
-import { getEthWalletClient } from '../utils/clients/ethClient';
+import { getEthWalletClient } from '../utils/clients/ethereum';
 import { sleep } from '../utils/common';
 import { zkSyncLiteAbi } from '../data/abi/zkSyncLite';
 

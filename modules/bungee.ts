@@ -3,7 +3,7 @@ import { makeLogger } from '../utils/logger';
 import {
   getEthWalletClient,
   getPublicEthClient,
-} from '../utils/clients/ethClient';
+} from '../utils/clients/ethereum';
 import { privateKeyToAccount } from 'viem/accounts';
 import { binanceConfig, bungeeConfig } from '../config';
 import { random, sleep } from '../utils/common';
@@ -52,11 +52,11 @@ export class Bungee {
     this.account = privateKeyToAccount(privateKey);
     this.walletAddress = this.ethWallet.account.address;
 
-    if (bungeeConfig.destinationNetwork === 'random') {
+    if (bungeeConfig.destNetwork === 'random') {
       this.randomNetwork = this.networks[random(0, this.networks.length - 1)];
     } else {
       this.randomNetwork = this.networks.find(
-        (network) => network.name === bungeeConfig.destinationNetwork
+        (network) => network.name === bungeeConfig.destNetwork
       );
     }
 
