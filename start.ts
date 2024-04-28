@@ -4,6 +4,7 @@ import {
   blurConfig,
   bungeeConfig,
   generalConfig,
+  scrollBridgeConfig,
   wrapConfig,
   zkSyncLiteConfig,
   zoraBridgeConfig,
@@ -21,6 +22,7 @@ import { entryPoint } from './utils/menu';
 import { privateKeyConvert, readWallets } from './utils/wallet';
 import { BlurDeposit } from './modules/blurDeposit';
 import { ZkSyncLiteDeposit } from './modules/zkSyncLiteDeposit';
+import { ScrollBridge } from './modules/scrollBridge';
 
 let privateKeys = readWallets('./keys.txt');
 
@@ -85,6 +87,7 @@ async function blurDepositModule() {
     if (await waitGas()) {
       await deposit.deposit(sum.toString());
     }
+
     const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
@@ -103,6 +106,7 @@ async function zkSyncLiteDepositModule() {
     if (await waitGas()) {
       await deposit.deposit(sum.toString());
     }
+
     const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
@@ -162,6 +166,25 @@ async function zoraBridgeModule() {
   }
 }
 
+async function scrollBridgeModule() {
+  const logger = makeLogger('Scroll bridge');
+  for (let privateKey of privateKeys) {
+    const bridge = new ScrollBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      scrollBridgeConfig.bridgeFrom,
+      scrollBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await bridge.bridge(sum.toString());
+    }
+
+    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
 async function startMenu() {
   let mode = await entryPoint();
   switch (mode) {
@@ -188,6 +211,9 @@ async function startMenu() {
       break;
     case 'zora_bridge':
       await zoraBridgeModule();
+      break;
+    case 'scroll_bridge':
+      await scrollBridgeModule();
       break;
   }
 }

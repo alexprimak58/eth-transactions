@@ -60,3 +60,8 @@ export const zoraBridgeConfig = {
   bridgeFrom: 0.00005,
   bridgeTo: 0.00016,
 };
+
+export const scrollBridgeConfig = {
+  bridgeFrom: 0.00005,
+  bridgeTo: 0.00016,
+};

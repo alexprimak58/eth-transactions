@@ -15,6 +15,7 @@ export const entryPoint = async () => {
         { name: 'ZkSync Lite deposit', value: 'zksync_lite_deposit' },
         { name: 'Base bridge', value: 'base_bridge' },
         { name: 'Zora bridge', value: 'zora_bridge' },
+        { name: 'Scroll bridge', value: 'scroll_bridge' },
       ],
       loop: false,
     },
