@@ -4,6 +4,7 @@ import {
   blurConfig,
   bungeeConfig,
   generalConfig,
+  okxConfig,
   scrollBridgeConfig,
   wrapConfig,
   zkSyncLiteConfig,
@@ -23,6 +24,7 @@ import { privateKeyConvert, readWallets } from './utils/wallet';
 import { BlurDeposit } from './modules/blurDeposit';
 import { ZkSyncLiteDeposit } from './modules/zkSyncLiteDeposit';
 import { ScrollBridge } from './modules/scrollBridge';
+import { OKX } from './modules/okx';
 
 let privateKeys = readWallets('./keys.txt');
 
@@ -40,6 +42,20 @@ async function binanceModule() {
     const binance = new Binance(privateKeyConvert(privateKey));
 
     await binance.withdraw(sum.toString());
+
+    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function okxModule() {
+  const logger = makeLogger('OKX');
+  for (let privateKey of privateKeys) {
+    const sum = randomFloat(okxConfig.withdrawFrom, okxConfig.withdrawTo);
+    const okx = new OKX(privateKeyConvert(privateKey));
+
+    await okx.withdraw(sum.toString());
 
     const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
@@ -190,6 +206,9 @@ async function startMenu() {
   switch (mode) {
     case 'binance':
       await binanceModule();
+      break;
+    case 'okx':
+      await okxModule();
       break;
     case 'mintfun':
       await mintfunModule();
