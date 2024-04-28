@@ -25,6 +25,23 @@ export const bridgeConfig = {
 export const binanceConfig = {
   key: '',
   secret: '',
+  proxy: '',
+  destNetwork: 'random', //or set 1 network
+  networks: ['Arb', 'Base', 'Op', 'zkSyncEra'],
+  coin: 'ETH', //in upper case
+  withdrawFrom: 0.001, // min: 0.001
+  withdrawTo: 0.0013,
+  useRefill: false,
+};
+
+export const okxConfig = {
+  key: '',
+  secret: '',
+  passphrase: '',
+  proxy: '',
+  destNetwork: 'random', //or set 1 network
+  networks: ['Arb', 'Base', 'Op', 'zkSyncEra'],
+  coin: 'ETH', //in upper case
   withdrawFrom: 0.001, // min: 0.001
   withdrawTo: 0.0013,
   useRefill: false,
