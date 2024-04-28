@@ -123,7 +123,7 @@ export class OKX {
     method: string = 'POST',
     endpoint: string,
     params: string = '',
-    body: any
+    body: any = ''
   ) {
     const timestamp = new Date().toISOString();
     const preHash =
@@ -144,5 +144,84 @@ export class OKX {
       'OK-ACCESS-PASSPHRASE': okxConfig.passphrase,
       'Content-Type': 'application/json',
     };
+  }
+
+  async transferToMain() {
+    let agent = null;
+
+    if (okxConfig.proxy) {
+      agent = new HttpsProxyAgent(okxConfig.proxy);
+    }
+
+    const subAccounts = await this.getSubAccounts();
+
+    for (let subAccount of subAccounts) {
+      const params = `?subAcct=${subAccount.subAcct}`;
+      const responseBalances = await axios.get(
+        this.baseUrl + '/api/v5/asset/subaccount/balances' + params,
+        {
+          httpAgent: agent,
+          headers: this.getHeaders(
+            'GET',
+            '/api/v5/asset/subaccount/balances',
+            params
+          ),
+        }
+      );
+
+      for (let balance of responseBalances.data.data) {
+        let body = {
+          ccy: balance.ccy,
+          amt: balance.availBalance,
+          subAcct: subAccount.subAcct,
+          from: '6',
+          to: '6',
+          type: '2',
+        };
+
+        await axios
+          .post(this.baseUrl + '/api/v5/asset/transfer', body, {
+            httpsAgent: agent,
+            headers: this.getHeaders(
+              'POST',
+              '/api/v5/asset/transfer',
+              '',
+              body
+            ),
+          })
+          .then((response) => {
+            this.logger.info(
+              `${subAccount.subAcct} | Transfer to main complete`
+            );
+          })
+          .catch((error) => {
+            this.logger.error(`${subAccount.subAcct} | ${error.toString()}`);
+          });
+      }
+    }
+
+    return true;
+  }
+
+  async getSubAccounts() {
+    let agent = null;
+
+    if (okxConfig.proxy) {
+      agent = new HttpsProxyAgent(okxConfig.proxy);
+    }
+
+    const response = await axios.get(
+      this.baseUrl + '/api/v5/users/subaccount/list',
+      {
+        httpAgent: agent,
+        headers: this.getHeaders('GET', '/api/v5/users/subaccount/list'),
+      }
+    );
+
+    if (response.data) {
+      return response.data.data;
+    }
+
+    return [];
   }
 }
