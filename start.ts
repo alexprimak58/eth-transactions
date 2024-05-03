@@ -5,6 +5,7 @@ import {
   bungeeConfig,
   generalConfig,
   okxConfig,
+  relayBridgeConfig,
   scrollBridgeConfig,
   wrapConfig,
   zkSyncLiteConfig,
@@ -25,6 +26,7 @@ import { BlurDeposit } from './modules/blurDeposit';
 import { ZkSyncLiteDeposit } from './modules/zkSyncLiteDeposit';
 import { ScrollBridge } from './modules/scrollBridge';
 import { OKX } from './modules/okx';
+import { RelayBridge } from './modules/relayBridge';
 
 let privateKeys = readWallets('./keys.txt');
 
@@ -201,6 +203,44 @@ async function scrollBridgeModule() {
   }
 }
 
+async function relayBridgeFromEthModule() {
+  const logger = makeLogger('Relay bridge');
+  for (let privateKey of privateKeys) {
+    const bridge = new RelayBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      relayBridgeConfig.bridgeFrom,
+      relayBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await bridge.bridgeFromEth(sum.toString());
+    }
+
+    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function relayBridgeToEthModule() {
+  const logger = makeLogger('Relay bridge');
+  for (let privateKey of privateKeys) {
+    const bridge = new RelayBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      relayBridgeConfig.bridgeFrom,
+      relayBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await bridge.bridgeToEth(sum.toString());
+    }
+
+    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
 async function startMenu() {
   let mode = await entryPoint();
   switch (mode) {
@@ -233,6 +273,12 @@ async function startMenu() {
       break;
     case 'scroll_bridge':
       await scrollBridgeModule();
+      break;
+    case 'relay_bridge_from_eth':
+      await relayBridgeFromEthModule();
+      break;
+    case 'relay_bridge_to_eth':
+      await relayBridgeToEthModule();
       break;
   }
 }

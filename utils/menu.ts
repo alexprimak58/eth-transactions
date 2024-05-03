@@ -17,6 +17,8 @@ export const entryPoint = async () => {
         { name: 'Base bridge', value: 'base_bridge' },
         { name: 'Zora bridge', value: 'zora_bridge' },
         { name: 'Scroll bridge', value: 'scroll_bridge' },
+        { name: 'Relay bridge from eth', value: 'relay_bridge_from_eth' },
+        { name: 'Relay bridge to eth', value: 'relay_bridge_to_eth' },
       ],
       loop: false,
     },

@@ -82,3 +82,48 @@ export const scrollBridgeConfig = {
   bridgeFrom: 0.00005,
   bridgeTo: 0.00016,
 };
+
+export const relayBridgeConfig = {
+  bridgeFrom: 0.00005,
+  bridgeTo: 0.00016,
+  //bridge to ETH
+  fromNetwork: 'random', //or set 1 network
+  fromNetworks: [
+    {
+      name: 'Arb',
+      id: 42161,
+    },
+    {
+      name: 'Base',
+      id: 8453,
+    },
+    {
+      name: 'Op',
+      id: 10,
+    },
+    {
+      name: 'zkSyncEra',
+      id: 324,
+    },
+  ],
+  //bridge from ETH
+  destNetwork: 'random', //or set 1 network
+  destNetworks: [
+    {
+      name: 'Arb',
+      id: 42161,
+    },
+    {
+      name: 'Base',
+      id: 8453,
+    },
+    {
+      name: 'Op',
+      id: 10,
+    },
+    {
+      name: 'zkSyncEra',
+      id: 324,
+    },
+  ],
+};
