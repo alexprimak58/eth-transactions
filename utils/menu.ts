@@ -7,6 +7,10 @@ export const entryPoint = async () => {
       type: 'list',
       message: 'Choice:',
       choices: [
+        {
+          name: 'Custom module',
+          value: 'custom',
+        },
         { name: 'Binance withdraw', value: 'binance' },
         { name: 'OKX withdraw', value: 'okx' },
         { name: 'Mintfun', value: 'mintfun' },

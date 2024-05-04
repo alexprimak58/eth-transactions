@@ -85,7 +85,7 @@ export class RelayBridge {
     const destNetworkId = this.destNetwork.id;
 
     this.logger.info(
-      `${this.ethWallet.account.address} | Relay bridge ${amount} ETH to ${destNetworkName}`
+      `${this.ethWallet.account.address} | Relay bridge ${amount} ETH ETH -> ${destNetworkName}`
     );
 
     let isSuccess = false;
@@ -135,7 +135,7 @@ export class RelayBridge {
     const fromNetworkId = this.fromNetwork.id;
 
     this.logger.info(
-      `${this.wallet.account.address} | Relay bridge ${amount} ETH to ${fromNetworkName}`
+      `${this.wallet.account.address} | Relay bridge ${amount} ETH ${fromNetworkName} -> ETH`
     );
 
     let isSuccess = false;
