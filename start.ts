@@ -246,14 +246,16 @@ async function customModule() {
   let customModules = generalConfig.customModules;
 
   for (let privateKey of privateKeys) {
-    const okx = new OKX(privateKeyConvert(privateKey));
+    if (generalConfig.useOkx) {
+      const okx = new OKX(privateKeyConvert(privateKey));
 
-    const withdrawSum = randomFloat(
-      okxConfig.withdrawFrom,
-      okxConfig.withdrawTo
-    );
+      const withdrawSum = randomFloat(
+        okxConfig.withdrawFrom,
+        okxConfig.withdrawTo
+      );
 
-    await okx.withdraw(withdrawSum.toString());
+      await okx.withdraw(withdrawSum.toString());
+    }
 
     if (await waitGas()) {
       let sleepTime;
@@ -261,64 +263,94 @@ async function customModule() {
         generalConfig.countModulesFrom,
         generalConfig.countModulesTo
       );
-      let userCustomModules = (
-        generalConfig.shuffleCustomModules
-          ? shuffle(customModules)
-          : customModules
-      ).slice(customModulesCount);
-
-      const sum = randomFloat(generalConfig.valueFrom, generalConfig.valueTo);
+      let shuffledModules = generalConfig.shuffleCustomModules
+        ? shuffle(customModules)
+        : customModules;
+      let userCustomModules = shuffledModules.slice(0, customModulesCount);
 
       for (let customModuleItem of userCustomModules) {
-        switch (customModuleItem) {
-          case 'mintfun':
-            const mintfun = new Mintfun(privateKeyConvert(privateKey));
-            await mintfun.mint();
-            break;
-          case 'relay_bridge_from_eth':
-            const relayBridgeFromEth = new RelayBridge(
-              privateKeyConvert(privateKey)
-            );
-            await relayBridgeFromEth.bridgeFromEth(sum.toString());
-            break;
-          case 'relay_bridge_to_eth':
-            const relayBridgeToEth = new RelayBridge(
-              privateKeyConvert(privateKey)
-            );
-            await relayBridgeToEth.bridgeToEth(sum.toString());
-            break;
-          case 'scroll_bridge':
-            const scrollBridge = new ScrollBridge(
-              privateKeyConvert(privateKey)
-            );
-            await scrollBridge.bridge(sum.toString());
-            break;
-          case 'zora_bridge':
-            const zoraBridge = new ZoraBridge(privateKeyConvert(privateKey));
-            await zoraBridge.bridge(sum.toString());
-            break;
-          case 'base_bridge':
-            const baseBridge = new BaseBridge(privateKeyConvert(privateKey));
-            await baseBridge.bridge(sum.toString());
-            break;
-          case 'wrap_eth':
-            const wrapEth = new WrapEth(privateKeyConvert(privateKey));
-            await wrapEth.wrap(sum.toString());
-            break;
-          case 'bungee':
-            const bungee = new Bungee(privateKeyConvert(privateKey));
-            await bungee.refuel(sum.toString());
-            break;
-          case 'zksync_lite_deposit':
-            const zkSyncLiteDeposit = new ZkSyncLiteDeposit(
-              privateKeyConvert(privateKey)
-            );
-            await zkSyncLiteDeposit.deposit(sum.toString());
-            break;
-          case 'blur_deposit':
-            const blurDeposit = new BlurDeposit(privateKeyConvert(privateKey));
-            await blurDeposit.deposit(sum.toString());
-            break;
+        const sum = randomFloat(generalConfig.valueFrom, generalConfig.valueTo);
+
+        if (generalConfig.useBridge) {
+          switch (customModuleItem) {
+            case 'mintfun':
+              const mintfun = new Mintfun(privateKeyConvert(privateKey));
+              await mintfun.mint();
+              break;
+            case 'relay_bridge_from_eth':
+              const relayBridgeFromEth = new RelayBridge(
+                privateKeyConvert(privateKey)
+              );
+              await relayBridgeFromEth.bridgeFromEth(sum.toString());
+              break;
+            case 'relay_bridge_to_eth':
+              const relayBridgeToEth = new RelayBridge(
+                privateKeyConvert(privateKey)
+              );
+              await relayBridgeToEth.bridgeToEth(sum.toString());
+              break;
+            case 'scroll_bridge':
+              const scrollBridge = new ScrollBridge(
+                privateKeyConvert(privateKey)
+              );
+              await scrollBridge.bridge(sum.toString());
+              break;
+            case 'zora_bridge':
+              const zoraBridge = new ZoraBridge(privateKeyConvert(privateKey));
+              await zoraBridge.bridge(sum.toString());
+              break;
+            case 'base_bridge':
+              const baseBridge = new BaseBridge(privateKeyConvert(privateKey));
+              await baseBridge.bridge(sum.toString());
+              break;
+            case 'wrap_eth':
+              const wrapEth = new WrapEth(privateKeyConvert(privateKey));
+              await wrapEth.wrap(sum.toString());
+              break;
+            case 'bungee':
+              const bungee = new Bungee(privateKeyConvert(privateKey));
+              await bungee.refuel(sum.toString());
+              break;
+            case 'zksync_lite_deposit':
+              const zkSyncLiteDeposit = new ZkSyncLiteDeposit(
+                privateKeyConvert(privateKey)
+              );
+              await zkSyncLiteDeposit.deposit(sum.toString());
+              break;
+            case 'blur_deposit':
+              const blurDeposit = new BlurDeposit(
+                privateKeyConvert(privateKey)
+              );
+              await blurDeposit.deposit(sum.toString());
+              break;
+          }
+        } else {
+          switch (customModuleItem) {
+            case 'mintfun':
+              const mintfun = new Mintfun(privateKeyConvert(privateKey));
+              await mintfun.mint();
+              break;
+            case 'wrap_eth':
+              const wrapEth = new WrapEth(privateKeyConvert(privateKey));
+              await wrapEth.wrap(sum.toString());
+              break;
+            case 'bungee':
+              const bungee = new Bungee(privateKeyConvert(privateKey));
+              await bungee.refuel(sum.toString());
+              break;
+            case 'zksync_lite_deposit':
+              const zkSyncLiteDeposit = new ZkSyncLiteDeposit(
+                privateKeyConvert(privateKey)
+              );
+              await zkSyncLiteDeposit.deposit(sum.toString());
+              break;
+            case 'blur_deposit':
+              const blurDeposit = new BlurDeposit(
+                privateKeyConvert(privateKey)
+              );
+              await blurDeposit.deposit(sum.toString());
+              break;
+          }
         }
 
         sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
@@ -326,7 +358,10 @@ async function customModule() {
         await sleep(sleepTime * 1000);
       }
 
-      sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+      sleepTime = random(
+        generalConfig.sleepWalletsFrom,
+        generalConfig.sleepWalletsTo
+      );
       logger.info(`Waiting ${sleepTime} sec until next wallet...`);
       await sleep(sleepTime * 1000);
     }

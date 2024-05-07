@@ -44,7 +44,7 @@ export class WrapEth {
 
         if (retryCount <= 3) {
           this.logger.info(
-            `${this.wallet.account.address} | Wait 30 sec and retry bridge ${retryCount}/3`
+            `${this.wallet.account.address} | Wait 30 sec and retry wrap ETH ${retryCount}/3`
           );
           retryCount++;
           await sleep(30 * 1000);
