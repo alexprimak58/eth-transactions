@@ -7,8 +7,6 @@ export const generalConfig = {
   sleepWalletsTo: 5,
   shuffleWallets: false,
   shuffleCustomModules: true,
-  valueFrom: 0.00005,
-  valueTo: 0.00016,
   maxGas: 15,
   maxAddressTxCount: 100,
   countModulesFrom: 3,

@@ -269,8 +269,6 @@ async function customModule() {
       let userCustomModules = shuffledModules.slice(0, customModulesCount);
 
       for (let customModuleItem of userCustomModules) {
-        const sum = randomFloat(generalConfig.valueFrom, generalConfig.valueTo);
-
         if (generalConfig.useBridge) {
           switch (customModuleItem) {
             case 'mintfun':
@@ -278,50 +276,88 @@ async function customModule() {
               await mintfun.mint();
               break;
             case 'relay_bridge_from_eth':
+              const relaySumFromEth = random(
+                relayBridgeConfig.bridgeFrom,
+                relayBridgeConfig.bridgeTo
+              );
               const relayBridgeFromEth = new RelayBridge(
                 privateKeyConvert(privateKey)
               );
-              await relayBridgeFromEth.bridgeFromEth(sum.toString());
+              await relayBridgeFromEth.bridgeFromEth(
+                relaySumFromEth.toString()
+              );
               break;
             case 'relay_bridge_to_eth':
+              const relaySumToEth = random(
+                relayBridgeConfig.bridgeFrom,
+                relayBridgeConfig.bridgeTo
+              );
               const relayBridgeToEth = new RelayBridge(
                 privateKeyConvert(privateKey)
               );
-              await relayBridgeToEth.bridgeToEth(sum.toString());
+              await relayBridgeToEth.bridgeToEth(relaySumToEth.toString());
               break;
             case 'scroll_bridge':
+              const scrollSum = random(
+                scrollBridgeConfig.bridgeFrom,
+                scrollBridgeConfig.bridgeTo
+              );
               const scrollBridge = new ScrollBridge(
                 privateKeyConvert(privateKey)
               );
-              await scrollBridge.bridge(sum.toString());
+              await scrollBridge.bridge(scrollSum.toString());
               break;
             case 'zora_bridge':
+              const zoraSum = random(
+                zoraBridgeConfig.bridgeFrom,
+                zoraBridgeConfig.bridgeTo
+              );
               const zoraBridge = new ZoraBridge(privateKeyConvert(privateKey));
-              await zoraBridge.bridge(sum.toString());
+              await zoraBridge.bridge(zoraSum.toString());
               break;
             case 'base_bridge':
+              const baseSum = random(
+                baseBridgeConfig.bridgeFrom,
+                baseBridgeConfig.bridgeTo
+              );
               const baseBridge = new BaseBridge(privateKeyConvert(privateKey));
-              await baseBridge.bridge(sum.toString());
+              await baseBridge.bridge(baseSum.toString());
               break;
             case 'wrap_eth':
+              const wrapSum = random(
+                wrapConfig.depositFrom,
+                wrapConfig.depositTo
+              );
               const wrapEth = new WrapEth(privateKeyConvert(privateKey));
-              await wrapEth.wrap(sum.toString());
+              await wrapEth.wrap(wrapSum.toString());
               break;
             case 'bungee':
+              const bungeeSum = random(
+                bungeeConfig.refuelFrom,
+                bungeeConfig.refuelTo
+              );
               const bungee = new Bungee(privateKeyConvert(privateKey));
-              await bungee.refuel(sum.toString());
+              await bungee.refuel(bungeeSum.toString());
               break;
             case 'zksync_lite_deposit':
+              const zkSum = random(
+                zkSyncLiteConfig.depositFrom,
+                zkSyncLiteConfig.depositTo
+              );
               const zkSyncLiteDeposit = new ZkSyncLiteDeposit(
                 privateKeyConvert(privateKey)
               );
-              await zkSyncLiteDeposit.deposit(sum.toString());
+              await zkSyncLiteDeposit.deposit(zkSum.toString());
               break;
             case 'blur_deposit':
+              const blurSum = random(
+                blurConfig.depositFrom,
+                blurConfig.depositTo
+              );
               const blurDeposit = new BlurDeposit(
                 privateKeyConvert(privateKey)
               );
-              await blurDeposit.deposit(sum.toString());
+              await blurDeposit.deposit(blurSum.toString());
               break;
           }
         } else {
@@ -331,24 +367,40 @@ async function customModule() {
               await mintfun.mint();
               break;
             case 'wrap_eth':
+              const wrapSum = random(
+                wrapConfig.depositFrom,
+                wrapConfig.depositTo
+              );
               const wrapEth = new WrapEth(privateKeyConvert(privateKey));
-              await wrapEth.wrap(sum.toString());
+              await wrapEth.wrap(wrapSum.toString());
               break;
             case 'bungee':
+              const bungeeSum = random(
+                bungeeConfig.refuelFrom,
+                bungeeConfig.refuelTo
+              );
               const bungee = new Bungee(privateKeyConvert(privateKey));
-              await bungee.refuel(sum.toString());
+              await bungee.refuel(bungeeSum.toString());
               break;
             case 'zksync_lite_deposit':
+              const zkSum = random(
+                zkSyncLiteConfig.depositFrom,
+                zkSyncLiteConfig.depositTo
+              );
               const zkSyncLiteDeposit = new ZkSyncLiteDeposit(
                 privateKeyConvert(privateKey)
               );
-              await zkSyncLiteDeposit.deposit(sum.toString());
+              await zkSyncLiteDeposit.deposit(zkSum.toString());
               break;
             case 'blur_deposit':
+              const blurSum = random(
+                blurConfig.depositFrom,
+                blurConfig.depositTo
+              );
               const blurDeposit = new BlurDeposit(
                 privateKeyConvert(privateKey)
               );
-              await blurDeposit.deposit(sum.toString());
+              await blurDeposit.deposit(blurSum.toString());
               break;
           }
         }
