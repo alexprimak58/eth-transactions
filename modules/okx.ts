@@ -35,7 +35,6 @@ export class OKX {
       this.network = okxConfig.destNetwork;
     }
 
-    this.network = this.network.toUpperCase();
     this.coin = okxConfig.coin.toUpperCase();
   }
 
@@ -59,7 +58,7 @@ export class OKX {
     let fee = await this.getWithdrawalFee(this.coin, this.network);
     const address = this.wallet.account.address;
     const network = this.network;
-    const coin = this.coin.toUpperCase();
+    const coin = this.coin;
     const value = parseFloat(amount).toFixed(5);
 
     this.logger.info(

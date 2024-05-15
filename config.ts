@@ -40,7 +40,7 @@ export const okxConfig = {
   passphrase: '',
   proxy: '',
   destNetwork: 'random', //or set 1 network
-  destNetworks: ['Arb', 'Base', 'Op', 'zkSyncEra'],
+  destNetworks: ['Arbitrum', 'Base', 'Optimism', 'ZkSync'],
   coin: 'ETH',
   withdrawFrom: 0.001, // min: 0.001
   withdrawTo: 0.0013,
