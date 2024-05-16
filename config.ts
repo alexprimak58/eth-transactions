@@ -18,7 +18,7 @@ export const generalConfig = {
     'scroll_bridge',
     'wrap_eth',
   ],
-  useOkx: false,
+  useOkx: true,
   useBridge: true,
 };
 
@@ -40,9 +40,9 @@ export const okxConfig = {
   passphrase: '',
   proxy: '',
   destNetwork: 'random', //or set 1 network
-  destNetworks: ['Arbitrum', 'Base', 'Optimism', 'ZkSync'],
+  destNetworks: ['Arbitrum One', 'Base', 'Optimism', 'zkSync Era'],
   coin: 'ETH',
-  withdrawFrom: 0.001, // min: 0.001
+  withdrawFrom: 0.001, // min: 0.001, for Base - 0.002
   withdrawTo: 0.0013,
   useRefill: false,
 };

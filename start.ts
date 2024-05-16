@@ -276,7 +276,7 @@ async function customModule() {
               await mintfun.mint();
               break;
             case 'relay_bridge_from_eth':
-              const relaySumFromEth = random(
+              const relaySumFromEth = randomFloat(
                 relayBridgeConfig.bridgeFrom,
                 relayBridgeConfig.bridgeTo
               );
@@ -288,7 +288,7 @@ async function customModule() {
               );
               break;
             case 'relay_bridge_to_eth':
-              const relaySumToEth = random(
+              const relaySumToEth = randomFloat(
                 relayBridgeConfig.bridgeFrom,
                 relayBridgeConfig.bridgeTo
               );
@@ -298,7 +298,7 @@ async function customModule() {
               await relayBridgeToEth.bridgeToEth(relaySumToEth.toString());
               break;
             case 'scroll_bridge':
-              const scrollSum = random(
+              const scrollSum = randomFloat(
                 scrollBridgeConfig.bridgeFrom,
                 scrollBridgeConfig.bridgeTo
               );
@@ -308,7 +308,7 @@ async function customModule() {
               await scrollBridge.bridge(scrollSum.toString());
               break;
             case 'zora_bridge':
-              const zoraSum = random(
+              const zoraSum = randomFloat(
                 zoraBridgeConfig.bridgeFrom,
                 zoraBridgeConfig.bridgeTo
               );
@@ -316,7 +316,7 @@ async function customModule() {
               await zoraBridge.bridge(zoraSum.toString());
               break;
             case 'base_bridge':
-              const baseSum = random(
+              const baseSum = randomFloat(
                 baseBridgeConfig.bridgeFrom,
                 baseBridgeConfig.bridgeTo
               );
@@ -324,7 +324,7 @@ async function customModule() {
               await baseBridge.bridge(baseSum.toString());
               break;
             case 'wrap_eth':
-              const wrapSum = random(
+              const wrapSum = randomFloat(
                 wrapConfig.depositFrom,
                 wrapConfig.depositTo
               );
@@ -332,7 +332,7 @@ async function customModule() {
               await wrapEth.wrap(wrapSum.toString());
               break;
             case 'bungee':
-              const bungeeSum = random(
+              const bungeeSum = randomFloat(
                 bungeeConfig.refuelFrom,
                 bungeeConfig.refuelTo
               );
@@ -340,7 +340,7 @@ async function customModule() {
               await bungee.refuel(bungeeSum.toString());
               break;
             case 'zksync_lite_deposit':
-              const zkSum = random(
+              const zkSum = randomFloat(
                 zkSyncLiteConfig.depositFrom,
                 zkSyncLiteConfig.depositTo
               );
@@ -350,7 +350,7 @@ async function customModule() {
               await zkSyncLiteDeposit.deposit(zkSum.toString());
               break;
             case 'blur_deposit':
-              const blurSum = random(
+              const blurSum = randomFloat(
                 blurConfig.depositFrom,
                 blurConfig.depositTo
               );
@@ -367,7 +367,7 @@ async function customModule() {
               await mintfun.mint();
               break;
             case 'wrap_eth':
-              const wrapSum = random(
+              const wrapSum = randomFloat(
                 wrapConfig.depositFrom,
                 wrapConfig.depositTo
               );
@@ -375,7 +375,7 @@ async function customModule() {
               await wrapEth.wrap(wrapSum.toString());
               break;
             case 'bungee':
-              const bungeeSum = random(
+              const bungeeSum = randomFloat(
                 bungeeConfig.refuelFrom,
                 bungeeConfig.refuelTo
               );
@@ -383,7 +383,7 @@ async function customModule() {
               await bungee.refuel(bungeeSum.toString());
               break;
             case 'zksync_lite_deposit':
-              const zkSum = random(
+              const zkSum = randomFloat(
                 zkSyncLiteConfig.depositFrom,
                 zkSyncLiteConfig.depositTo
               );
@@ -393,7 +393,7 @@ async function customModule() {
               await zkSyncLiteDeposit.deposit(zkSum.toString());
               break;
             case 'blur_deposit':
-              const blurSum = random(
+              const blurSum = randomFloat(
                 blurConfig.depositFrom,
                 blurConfig.depositTo
               );
