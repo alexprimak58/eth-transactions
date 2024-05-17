@@ -24,7 +24,7 @@ export class RelayBridge {
   fromNetwork: any;
   destNetwork: any;
 
-  constructor(privateKey: Hex) {
+  constructor(privateKey: Hex, fromNetwork?: string) {
     this.privateKey = privateKey;
     this.logger = makeLogger('Relay bridge');
     this.ethWallet = getEthWalletClient(privateKey);
@@ -40,14 +40,14 @@ export class RelayBridge {
       );
     }
 
-    if (relayBridgeConfig.fromNetwork === 'random') {
+    if (fromNetwork === 'random') {
       this.fromNetwork =
         relayBridgeConfig.fromNetworks[
           random(0, relayBridgeConfig.fromNetworks.length - 1)
         ];
     } else {
       this.fromNetwork = relayBridgeConfig.fromNetworks.find(
-        (network) => network.name === relayBridgeConfig.fromNetwork
+        (network) => network.name === fromNetwork
       );
     }
 
@@ -85,7 +85,7 @@ export class RelayBridge {
     const destNetworkId = this.destNetwork.id;
 
     this.logger.info(
-      `${this.ethWallet.account.address} | Relay bridge ${amount} ETH ETH -> ${destNetworkName}`
+      `${this.ethWallet.account.address} | Relay bridge ETHEREUM -> ${destNetworkName} ${amount} ETH`
     );
 
     let isSuccess = false;
@@ -135,7 +135,7 @@ export class RelayBridge {
     const fromNetworkId = this.fromNetwork.id;
 
     this.logger.info(
-      `${this.wallet.account.address} | Relay bridge ${amount} ETH ${fromNetworkName} -> ETH`
+      `${this.wallet.account.address} | Relay bridge ${fromNetworkName} -> ETHEREUM ${amount} ETH `
     );
 
     let isSuccess = false;
@@ -153,8 +153,10 @@ export class RelayBridge {
 
         isSuccess = true;
 
+        console.log(data);
+
         this.logger.info(
-          `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> ETH: https://etherscan.io/tx/${data.txHashes?.[0].txHash}`
+          `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> ETHEREUM: https://etherscan.io/tx/${data.txHashes?.[0].txHash}`
         );
       } catch (error) {
         this.logger.info(`${this.wallet.account.address} | Error ${error}`);

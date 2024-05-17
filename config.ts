@@ -1,10 +1,10 @@
 export const generalConfig = {
   ethrpc: 'https://rpc.ankr.com/eth',
   baserpc: 'https://rpc.ankr.com/base',
-  sleepFrom: 1,
-  sleepTo: 3,
-  sleepWalletsFrom: 3,
-  sleepWalletsTo: 5,
+  sleepFrom: 60,
+  sleepTo: 150,
+  sleepWalletsFrom: 60,
+  sleepWalletsTo: 150,
   shuffleWallets: false,
   shuffleCustomModules: true,
   maxGas: 15,
@@ -18,7 +18,7 @@ export const generalConfig = {
     'scroll_bridge',
     'wrap_eth',
   ],
-  useOkx: true,
+  useTopup: true,
   useBridge: true,
 };
 

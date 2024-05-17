@@ -246,7 +246,10 @@ async function customModule() {
   let customModules = generalConfig.customModules;
 
   for (let privateKey of privateKeys) {
-    if (generalConfig.useOkx) {
+    let network;
+    let sleepTime;
+
+    if (generalConfig.useTopup) {
       const okx = new OKX(privateKeyConvert(privateKey));
 
       const withdrawSum = randomFloat(
@@ -254,11 +257,45 @@ async function customModule() {
         okxConfig.withdrawTo
       );
 
-      await okx.withdraw(withdrawSum.toString());
+      network = await okx.withdraw(withdrawSum.toString());
+
+      sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+      logger.info(`Waiting ${sleepTime} sec until next module...`);
+      await sleep(sleepTime * 1000);
+
+      if (network) {
+        switch (network) {
+          case 'Arbitrum One':
+            network = 'Arb';
+            break;
+          case 'Base':
+            network = 'Base';
+            break;
+          case 'Optimism':
+            network = 'Op';
+            break;
+          case 'zkSync Era':
+            network = 'zkSyncEra';
+            break;
+        }
+
+        const relaySumToEth = randomFloat(
+          relayBridgeConfig.bridgeFrom,
+          relayBridgeConfig.bridgeTo
+        );
+        const relayBridgeToEth = new RelayBridge(
+          privateKeyConvert(privateKey),
+          network
+        );
+        await relayBridgeToEth.bridgeToEth(relaySumToEth.toString());
+
+        sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+        logger.info(`Waiting ${sleepTime} sec until next module...`);
+        await sleep(sleepTime * 1000);
+      }
     }
 
     if (await waitGas()) {
-      let sleepTime;
       let customModulesCount = random(
         generalConfig.countModulesFrom,
         generalConfig.countModulesTo
@@ -286,16 +323,6 @@ async function customModule() {
               await relayBridgeFromEth.bridgeFromEth(
                 relaySumFromEth.toString()
               );
-              break;
-            case 'relay_bridge_to_eth':
-              const relaySumToEth = randomFloat(
-                relayBridgeConfig.bridgeFrom,
-                relayBridgeConfig.bridgeTo
-              );
-              const relayBridgeToEth = new RelayBridge(
-                privateKeyConvert(privateKey)
-              );
-              await relayBridgeToEth.bridgeToEth(relaySumToEth.toString());
               break;
             case 'scroll_bridge':
               const scrollSum = randomFloat(

@@ -40,8 +40,17 @@ export class OKX {
 
   async getWithdrawalFee(symbolWithdraw: string, chainName: string) {
     try {
+      switch (chainName) {
+        case 'Optimism':
+          chainName = 'OPTIMISM';
+          break;
+        case 'Arbitrum One':
+          chainName = 'ARBONE';
+          break;
+      }
       const currencies = await this.exchange.fetchCurrencies();
       const currencyInfo = currencies[symbolWithdraw];
+      console.log(currencyInfo);
       if (currencyInfo) {
         const networkInfo = currencyInfo.networks;
         if (networkInfo && networkInfo[chainName]) {
@@ -55,11 +64,14 @@ export class OKX {
   }
 
   async withdraw(amount: string) {
-    let fee = await this.getWithdrawalFee(this.coin, this.network);
     const address = this.wallet.account.address;
     const network = this.network;
     const coin = this.coin;
     const value = parseFloat(amount).toFixed(5);
+
+    let fee = await this.getWithdrawalFee(coin, network);
+
+    console.log(fee);
 
     this.logger.info(
       `${address} | OKX withdraw ${coin} -> ${network}: ${value} ${coin}`
@@ -102,9 +114,13 @@ export class OKX {
             `${address} | OKX withdraw success ${coin} -> ${network}: ${value} ${coin}`
           );
         } else {
-          `${address} | OKX withdraw unsuccessful: ${response.data.msg}`;
+          this.logger.info(
+            `${address} | OKX withdraw unsuccessful: ${response.data.msg}`
+          );
         }
       }
+
+      return network;
     } catch (error) {
       if (error.response) {
         this.logger.info(
