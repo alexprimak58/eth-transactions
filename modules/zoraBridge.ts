@@ -26,19 +26,21 @@ export class ZoraBridge {
     let isSuccess = false;
     let retryCount = 1;
 
+    const args: readonly [`0x${string}`, bigint, bigint, boolean, string] = [
+      this.wallet.account.address,
+      value,
+      BigInt(100000),
+      false,
+      '',
+    ];
+
     while (!isSuccess) {
       try {
         const txHash = await this.wallet.writeContract({
           address: this.bridgeContractAddress,
           abi: zoraBridgeAbi,
           functionName: 'depositTransaction',
-          args: [
-            this.wallet.account.address,
-            value.toString(),
-            BigInt(100000),
-            false,
-            '0x',
-          ],
+          args: args,
           value: value,
         });
 
