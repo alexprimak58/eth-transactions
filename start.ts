@@ -252,12 +252,12 @@ async function customModule() {
     if (generalConfig.useTopup) {
       const okx = new OKX(privateKeyConvert(privateKey));
 
-      const withdrawSum = randomFloat(
-        okxConfig.withdrawFrom,
-        okxConfig.withdrawTo
+      const sum = randomFloat(
+        generalConfig.topupValueFrom,
+        generalConfig.topupValueTo
       );
 
-      network = await okx.withdraw(withdrawSum.toString());
+      network = await okx.withdraw(sum.toString());
 
       sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
       logger.info(`Waiting ${sleepTime} sec until next module...`);
@@ -279,15 +279,11 @@ async function customModule() {
             break;
         }
 
-        const relaySumToEth = randomFloat(
-          relayBridgeConfig.bridgeFrom,
-          relayBridgeConfig.bridgeTo
-        );
         const relayBridgeToEth = new RelayBridge(
           privateKeyConvert(privateKey),
           network
         );
-        await relayBridgeToEth.bridgeToEth(relaySumToEth.toString());
+        await relayBridgeToEth.bridgeToEth(sum.toString());
 
         sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
         logger.info(`Waiting ${sleepTime} sec until next module...`);

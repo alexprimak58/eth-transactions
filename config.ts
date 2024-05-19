@@ -18,6 +18,8 @@ export const generalConfig = {
     'scroll_bridge',
     'wrap_eth',
   ],
+  topupValueFrom: 0.001,
+  topupValueTo: 0.0013,
   useTopup: true,
   useBridge: true,
 };

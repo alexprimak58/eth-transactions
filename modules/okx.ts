@@ -50,7 +50,6 @@ export class OKX {
       }
       const currencies = await this.exchange.fetchCurrencies();
       const currencyInfo = currencies[symbolWithdraw];
-      console.log(currencyInfo);
       if (currencyInfo) {
         const networkInfo = currencyInfo.networks;
         if (networkInfo && networkInfo[chainName]) {
@@ -70,8 +69,6 @@ export class OKX {
     const value = parseFloat(amount).toFixed(5);
 
     let fee = await this.getWithdrawalFee(coin, network);
-
-    console.log(fee);
 
     this.logger.info(
       `${address} | OKX withdraw ${coin} -> ${network}: ${value} ${coin}`

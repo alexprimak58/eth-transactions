@@ -1,4 +1,4 @@
-import { Hex, parseEther } from 'viem';
+import { Hex, formatEther, parseEther } from 'viem';
 import { makeLogger } from '../utils/logger';
 import { getEthWalletClient } from '../utils/clients/ethereum';
 import {
@@ -15,6 +15,13 @@ import { getArbWalletClient } from '../utils/clients/arbitrum';
 import { getBaseWalletClient } from '../utils/clients/base';
 import { getOptWalletClient } from '../utils/clients/optimism';
 import { getZkWalletClient } from '../utils/clients/zkSync';
+
+interface Quote {
+  fees: {
+    gas: string;
+    relayer: string;
+  };
+}
 
 export class RelayBridge {
   privateKey: Hex;
@@ -81,11 +88,11 @@ export class RelayBridge {
 
   async bridgeFromEth(amount: string) {
     const value: bigint = BigInt(parseEther(amount));
-    const destNetworkName = this.destNetwork.name.toUpperCase();
+    const destNetworkName = this.destNetwork.name;
     const destNetworkId = this.destNetwork.id;
 
     this.logger.info(
-      `${this.ethWallet.account.address} | Relay bridge ETHEREUM -> ${destNetworkName} ${amount} ETH`
+      `${this.ethWallet.account.address} | Relay bridge Ethereum -> ${destNetworkName} ${amount} ETH`
     );
 
     let isSuccess = false;
@@ -104,7 +111,7 @@ export class RelayBridge {
         isSuccess = true;
 
         this.logger.info(
-          `${this.ethWallet.account.address} | Success bridge ETH -> ${destNetworkName}: https://etherscan.io/tx/${data.txHashes?.[0].txHash}`
+          `${this.ethWallet.account.address} | Success bridge Ethereum -> ${destNetworkName}: https://etherscan.io/tx/${data.txHashes?.[0].txHash}`
         );
       } catch (error) {
         this.logger.info(`${this.ethWallet.account.address} | Error ${error}`);
@@ -130,12 +137,28 @@ export class RelayBridge {
   }
 
   async bridgeToEth(amount: string) {
-    const value: bigint = BigInt(parseEther(amount));
-    const fromNetworkName = this.fromNetwork.name.toUpperCase();
+    let value: bigint = BigInt(parseEther(amount));
+    const fromNetworkName = this.fromNetwork.name;
     const fromNetworkId = this.fromNetwork.id;
 
+    const quote = (await getClient()?.methods.getBridgeQuote({
+      wallet: this.wallet,
+      chainId: fromNetworkId,
+      toChainId: 1,
+      amount: value.toString(),
+      currency: 'eth',
+    })) as Quote;
+
+    const fee = BigInt(quote.fees.gas) + BigInt(quote.fees.relayer);
+
+    value = value - fee;
+
     this.logger.info(
-      `${this.wallet.account.address} | Relay bridge ${fromNetworkName} -> ETHEREUM ${amount} ETH `
+      `${
+        this.wallet.account.address
+      } | Relay bridge ${fromNetworkName} -> ETHEREUM ${formatEther(
+        value
+      )} ETH `
     );
 
     let isSuccess = false;
@@ -153,10 +176,8 @@ export class RelayBridge {
 
         isSuccess = true;
 
-        console.log(data);
-
         this.logger.info(
-          `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> ETHEREUM: https://etherscan.io/tx/${data.txHashes?.[0].txHash}`
+          `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> Ethereum: https://etherscan.io/tx/${data.txHashes?.[0].txHash}`
         );
       } catch (error) {
         this.logger.info(`${this.wallet.account.address} | Error ${error}`);
