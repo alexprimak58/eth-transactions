@@ -23,13 +23,13 @@ export class BaseBridge {
       `${this.wallet.account.address} | Base bridge ${amount} ETH`
     );
 
-    const args: readonly [`0x${string}`, bigint, bigint, boolean, string] = [
-      this.wallet.account.address,
-      value,
-      BigInt(100000),
-      false,
-      '01',
-    ];
+    const args: readonly [
+      `0x${string}`,
+      bigint,
+      bigint,
+      boolean,
+      `0x${string}`
+    ] = [this.wallet.account.address, value, BigInt(100000), false, '0x'];
 
     let isSuccess = false;
     let retryCount = 1;

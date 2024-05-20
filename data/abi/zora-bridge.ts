@@ -1,41 +1,11 @@
 export const zoraBridgeAbi = [
-  {
-    inputs: [
-      {
-        internalType: 'contract L2OutputOracle',
-        name: '_l2Oracle',
-        type: 'address',
-      },
-      { internalType: 'address', name: '_guardian', type: 'address' },
-      { internalType: 'bool', name: '_paused', type: 'bool' },
-      {
-        internalType: 'contract SystemConfig',
-        name: '_config',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
+  { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
     anonymous: false,
     inputs: [
       { indexed: false, internalType: 'uint8', name: 'version', type: 'uint8' },
     ],
     name: 'Initialized',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'Paused',
     type: 'event',
   },
   {
@@ -57,19 +27,6 @@ export const zoraBridgeAbi = [
       },
     ],
     name: 'TransactionDeposited',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'Unpaused',
     type: 'event',
   },
   {
@@ -175,7 +132,30 @@ export const zoraBridgeAbi = [
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'bool', name: '_paused', type: 'bool' }],
+    inputs: [],
+    name: 'guardian',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract L2OutputOracle',
+        name: '_l2Oracle',
+        type: 'address',
+      },
+      {
+        internalType: 'contract SystemConfig',
+        name: '_systemConfig',
+        type: 'address',
+      },
+      {
+        internalType: 'contract SuperchainConfig',
+        name: '_superchainConfig',
+        type: 'address',
+      },
+    ],
     name: 'initialize',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -187,6 +167,15 @@ export const zoraBridgeAbi = [
     ],
     name: 'isOutputFinalized',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'l2Oracle',
+    outputs: [
+      { internalType: 'contract L2OutputOracle', name: '', type: 'address' },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -217,15 +206,8 @@ export const zoraBridgeAbi = [
   },
   {
     inputs: [],
-    name: 'pause',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'paused',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    outputs: [{ internalType: 'bool', name: 'paused_', type: 'bool' }],
     stateMutability: 'view',
     type: 'function',
   },
@@ -280,9 +262,20 @@ export const zoraBridgeAbi = [
   },
   {
     inputs: [],
-    name: 'unpause',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    name: 'superchainConfig',
+    outputs: [
+      { internalType: 'contract SuperchainConfig', name: '', type: 'address' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'systemConfig',
+    outputs: [
+      { internalType: 'contract SystemConfig', name: '', type: 'address' },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
