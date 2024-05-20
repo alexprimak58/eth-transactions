@@ -30,6 +30,7 @@ export class RelayBridge {
   ethWallet: any;
   fromNetwork: any;
   destNetwork: any;
+  scanUrl: any;
 
   constructor(privateKey: Hex, fromNetwork?: string) {
     this.privateKey = privateKey;
@@ -61,15 +62,20 @@ export class RelayBridge {
     switch (this.fromNetwork.id) {
       case 42161:
         this.wallet = getArbWalletClient(privateKey);
+        this.scanUrl = 'https://arbiscan.io/tx';
         break;
       case 8453:
         this.wallet = getBaseWalletClient(privateKey);
+        this.scanUrl = 'https://basescan.org/tx';
         break;
+
       case 10:
         this.wallet = getOptWalletClient(privateKey);
+        this.scanUrl = 'https://optimistic.etherscan.io/tx';
         break;
       case 324:
         this.wallet = getZkWalletClient(privateKey);
+        this.scanUrl = 'https://explorer.zksync.io/tx';
         break;
     }
 
@@ -137,25 +143,10 @@ export class RelayBridge {
   }
 
   async bridgeToEth(amount: string) {
-    let scan: string = '';
     let value: bigint = BigInt(parseEther(amount));
     const fromNetworkName = this.fromNetwork.name;
     const fromNetworkId = this.fromNetwork.id;
-
-    switch (fromNetworkName) {
-      case 'Arb':
-        scan = 'https://arbiscan.io/tx';
-        break;
-      case 'Base':
-        scan = 'https://basescan.org/tx';
-        break;
-      case 'Op':
-        scan = 'https://optimistic.etherscan.io/tx';
-        break;
-      case 'zkSyncEra':
-        scan = 'https://explorer.zksync.io/tx';
-        break;
-    }
+    const scanUrl = this.scanUrl;
 
     const quote = (await getClient()?.methods.getBridgeQuote({
       wallet: this.wallet,
@@ -196,7 +187,7 @@ export class RelayBridge {
         isSuccess = true;
 
         this.logger.info(
-          `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> Ethereum: ${scan}/${data.txHashes?.[0].txHash}`
+          `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> Ethereum: ${scanUrl}/${data.txHashes?.[0].txHash}`
         );
       } catch (error) {
         this.logger.info(`${this.wallet.account.address} | Error ${error}`);
