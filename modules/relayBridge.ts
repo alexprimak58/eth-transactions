@@ -173,22 +173,25 @@ export class RelayBridge {
 
     while (!isSuccess) {
       try {
-        const data = (await getClient()?.actions.bridge({
+        (await getClient()?.actions.bridge({
           wallet: this.wallet,
           chainId: fromNetworkId,
           toChainId: 1,
           amount: value.toString(),
           currency: 'eth',
-          onProgress: ({ txHashes }) => {
-            return txHashes;
+          onProgress: ({ steps, txHashes }) => {
+            if (
+              steps.find((step) =>
+                step.items?.every((item) => item.status === 'complete')
+              )
+            ) {
+              isSuccess = true;
+              this.logger.info(
+                `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> Ethereum: ${scanUrl}/${txHashes?.[0].txHash}`
+              );
+            }
           },
         })) as ProgressData;
-
-        isSuccess = true;
-
-        this.logger.info(
-          `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> Ethereum: ${scanUrl}/${data.txHashes?.[0].txHash}`
-        );
       } catch (error) {
         this.logger.info(`${this.wallet.account.address} | Error ${error}`);
 
