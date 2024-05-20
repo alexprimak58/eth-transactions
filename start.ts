@@ -34,37 +34,6 @@ if (generalConfig.shuffleWallets) {
   shuffle(privateKeys);
 }
 
-async function binanceModule() {
-  const logger = makeLogger('Binance');
-  for (let privateKey of privateKeys) {
-    const sum = randomFloat(
-      binanceConfig.withdrawFrom,
-      binanceConfig.withdrawTo
-    );
-    const binance = new Binance(privateKeyConvert(privateKey));
-
-    await binance.withdraw(sum.toString());
-
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
-async function okxModule() {
-  const logger = makeLogger('OKX');
-  for (let privateKey of privateKeys) {
-    const sum = randomFloat(okxConfig.withdrawFrom, okxConfig.withdrawTo);
-    const okx = new OKX(privateKeyConvert(privateKey));
-
-    await okx.withdraw(sum.toString());
-
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
 async function mintfunModule() {
   const logger = makeLogger('Mintfun');
   for (let privateKey of privateKeys) {
@@ -74,7 +43,10 @@ async function mintfunModule() {
       await mintfun.mint();
     }
 
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
   }
@@ -90,7 +62,10 @@ async function bungeeModule() {
       await merkly.refuel(sum.toString());
     }
 
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
   }
@@ -106,7 +81,10 @@ async function blurDepositModule() {
       await deposit.deposit(sum.toString());
     }
 
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
   }
@@ -125,7 +103,10 @@ async function zkSyncLiteDepositModule() {
       await deposit.deposit(sum.toString());
     }
 
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
   }
@@ -140,7 +121,10 @@ async function wrapEthModule() {
     if (await waitGas()) {
       await wrap.wrap(sum.toString());
     }
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
   }
@@ -159,7 +143,10 @@ async function baseBridgeModule() {
       await bridge.bridge(sum.toString());
     }
 
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
   }
@@ -178,7 +165,10 @@ async function zoraBridgeModule() {
       await bridge.bridge(sum.toString());
     }
 
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
   }
@@ -197,7 +187,10 @@ async function scrollBridgeModule() {
       await bridge.bridge(sum.toString());
     }
 
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
   }
@@ -216,7 +209,10 @@ async function relayBridgeFromEthModule() {
       await bridge.bridgeFromEth(sum.toString());
     }
 
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
   }
@@ -235,7 +231,10 @@ async function relayBridgeToEthModule() {
       await bridge.bridgeToEth(sum.toString());
     }
 
-    const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
     logger.info(`Waiting ${sleepTime} sec until next wallet...`);
     await sleep(sleepTime * 1000);
   }
@@ -259,7 +258,10 @@ async function customModule() {
 
       network = await okx.withdraw(sum.toString());
 
-      sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+      sleepTime = random(
+        generalConfig.sleepWithdrawFrom,
+        generalConfig.sleepWithdrawTo
+      );
       logger.info(`Waiting ${sleepTime} sec until next module...`);
       await sleep(sleepTime * 1000);
 
@@ -285,7 +287,10 @@ async function customModule() {
         );
         await relayBridgeToEth.bridgeToEth(sum.toString());
 
-        sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+        sleepTime = random(
+          generalConfig.sleepModulesFrom,
+          generalConfig.sleepModulesTo
+        );
         logger.info(`Waiting ${sleepTime} sec until next module...`);
         await sleep(sleepTime * 1000);
       }
@@ -428,7 +433,10 @@ async function customModule() {
           }
         }
 
-        sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+        sleepTime = random(
+          generalConfig.sleepModulesFrom,
+          generalConfig.sleepModulesTo
+        );
         logger.info(`Waiting ${sleepTime} sec until next module...`);
         await sleep(sleepTime * 1000);
       }
@@ -446,12 +454,6 @@ async function customModule() {
 async function startMenu() {
   let mode = await entryPoint();
   switch (mode) {
-    case 'binance':
-      await binanceModule();
-      break;
-    case 'okx':
-      await okxModule();
-      break;
     case 'mintfun':
       await mintfunModule();
       break;

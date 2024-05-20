@@ -1,8 +1,10 @@
 export const generalConfig = {
   ethrpc: 'https://rpc.ankr.com/eth',
   baserpc: 'https://rpc.ankr.com/base',
-  sleepFrom: 60,
-  sleepTo: 150,
+  sleepWithdrawFrom: 120,
+  sleepWithdrawTo: 180,
+  sleepModulesFrom: 60,
+  sleepModulesTo: 150,
   sleepWalletsFrom: 60,
   sleepWalletsTo: 150,
   shuffleWallets: false,
@@ -31,8 +33,6 @@ export const binanceConfig = {
   destNetwork: 'random', //or set 1 network
   destNetworks: ['Arb', 'Base', 'Op', 'zkSyncEra'],
   coin: 'ETH',
-  withdrawFrom: 0.001, // min: 0.001
-  withdrawTo: 0.0013,
   useRefill: false,
 };
 
@@ -44,8 +44,6 @@ export const okxConfig = {
   destNetwork: 'random', //or set 1 network
   destNetworks: ['Arbitrum One', 'Base', 'Optimism', 'zkSync Era'],
   coin: 'ETH',
-  withdrawFrom: 0.001, // min: 0.001, for Base - 0.002
-  withdrawTo: 0.0013,
   useRefill: false,
 };
 

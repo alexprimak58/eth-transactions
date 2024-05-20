@@ -7,10 +7,16 @@ import { privateKeyConvert } from './wallet';
 
 export async function refill(privateKey: Hex) {
   const logger = makeLogger('Binance');
-  const sum = randomFloat(binanceConfig.withdrawFrom, binanceConfig.withdrawTo);
+  const sum = randomFloat(
+    generalConfig.topupValueFrom,
+    generalConfig.topupValueTo
+  );
   const binance = new Binance(privateKeyConvert(privateKey));
   await binance.withdraw(sum.toString());
 
-  const sleepTime = random(generalConfig.sleepFrom, generalConfig.sleepTo);
+  const sleepTime = random(
+    generalConfig.sleepModulesFrom,
+    generalConfig.sleepModulesTo
+  );
   logger.info(`Waiting ${sleepTime} sec after refill...`);
 }

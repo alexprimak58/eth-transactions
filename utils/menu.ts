@@ -11,8 +11,6 @@ export const entryPoint = async () => {
           name: 'Custom module',
           value: 'custom',
         },
-        { name: 'Binance withdraw', value: 'binance' },
-        { name: 'OKX withdraw', value: 'okx' },
         { name: 'Mintfun', value: 'mintfun' },
         { name: 'Bungee', value: 'bungee' },
         { name: 'Wrap eth', value: 'wrap_eth' },

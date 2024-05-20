@@ -156,7 +156,7 @@ export class RelayBridge {
     this.logger.info(
       `${
         this.wallet.account.address
-      } | Relay bridge ${fromNetworkName} -> ETHEREUM ${formatEther(
+      } | Relay bridge ${fromNetworkName} -> Ethereum ${formatEther(
         value
       )} ETH `
     );
@@ -172,13 +172,21 @@ export class RelayBridge {
           toChainId: 1,
           amount: value.toString(),
           currency: 'eth',
+          onProgress: ({ steps, txHashes }) => {
+            if (
+              steps.find((step) =>
+                step.items?.every((item) => item.status === 'complete')
+              )
+            ) {
+              this.logger.info(
+                `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> Ethereum: https://etherscan.io/tx/${txHashes?.[0].txHash}`
+              );
+            }
+            console.log(steps, txHashes);
+          },
         })) as ProgressData;
 
         isSuccess = true;
-
-        this.logger.info(
-          `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> Ethereum: https://etherscan.io/tx/${data.txHashes?.[0].txHash}`
-        );
       } catch (error) {
         this.logger.info(`${this.wallet.account.address} | Error ${error}`);
 
