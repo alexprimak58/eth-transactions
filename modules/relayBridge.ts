@@ -137,9 +137,25 @@ export class RelayBridge {
   }
 
   async bridgeToEth(amount: string) {
+    let scan: string = '';
     let value: bigint = BigInt(parseEther(amount));
     const fromNetworkName = this.fromNetwork.name;
     const fromNetworkId = this.fromNetwork.id;
+
+    switch (fromNetworkName) {
+      case 'Arb':
+        scan = 'https://arbiscan.io/tx';
+        break;
+      case 'Base':
+        scan = 'https://basescan.org/tx';
+        break;
+      case 'Op':
+        scan = 'https://optimistic.etherscan.io/tx';
+        break;
+      case 'zkSyncEra':
+        scan = 'https://explorer.zksync.io/tx';
+        break;
+    }
 
     const quote = (await getClient()?.methods.getBridgeQuote({
       wallet: this.wallet,
@@ -172,21 +188,16 @@ export class RelayBridge {
           toChainId: 1,
           amount: value.toString(),
           currency: 'eth',
-          onProgress: ({ steps, txHashes }) => {
-            if (
-              steps.find((step) =>
-                step.items?.every((item) => item.status === 'complete')
-              )
-            ) {
-              this.logger.info(
-                `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> Ethereum: https://etherscan.io/tx/${txHashes?.[0].txHash}`
-              );
-            }
-            console.log(steps, txHashes);
+          onProgress: ({ txHashes }) => {
+            return txHashes;
           },
         })) as ProgressData;
 
         isSuccess = true;
+
+        this.logger.info(
+          `${this.wallet.account.address} | Success bridge ${fromNetworkName} -> Ethereum: ${scan}/${data.txHashes?.[0].txHash}`
+        );
       } catch (error) {
         this.logger.info(`${this.wallet.account.address} | Error ${error}`);
 

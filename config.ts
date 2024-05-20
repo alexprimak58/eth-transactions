@@ -1,8 +1,8 @@
 export const generalConfig = {
   ethrpc: 'https://rpc.ankr.com/eth',
   baserpc: 'https://rpc.ankr.com/base',
-  sleepWithdrawFrom: 120,
-  sleepWithdrawTo: 180,
+  sleepWithdrawFrom: 1,
+  sleepWithdrawTo: 5,
   sleepModulesFrom: 60,
   sleepModulesTo: 150,
   sleepWalletsFrom: 60,
