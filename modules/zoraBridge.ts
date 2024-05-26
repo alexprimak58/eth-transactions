@@ -2,7 +2,7 @@ import { Hex, parseEther } from 'viem';
 import { makeLogger } from '../utils/logger';
 import { getEthWalletClient } from '../utils/clients/ethereum';
 import { sleep } from '../utils/common';
-import { zoraBridgeAbi } from '../data/abi/zora-bridge';
+import { zoraBridgeAbi } from '../data/abi/zoraBridge';
 
 export class ZoraBridge {
   privateKey: Hex;
