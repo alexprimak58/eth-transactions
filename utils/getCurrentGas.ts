@@ -1,6 +1,6 @@
 import { formatGwei } from 'viem';
 import { getPublicEthClient } from './clients/ethereum';
-import { bridgeConfig, generalConfig } from '../config';
+import { generalConfig } from '../config';
 import { makeLogger } from './logger';
 import { sleep } from './common';
 
@@ -13,9 +13,6 @@ export async function getCurrentGas() {
 
 export async function waitGas(type: string = 'regular') {
   let maxGas = generalConfig.maxGas;
-  if (type === 'bridge') {
-    maxGas = bridgeConfig.maxGas;
-  }
 
   const logger = makeLogger('Gas checker');
   let isGoodGas = false;

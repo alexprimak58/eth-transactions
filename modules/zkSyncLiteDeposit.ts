@@ -2,7 +2,7 @@ import { Hex, parseEther } from 'viem';
 import { makeLogger } from '../utils/logger';
 import { getEthWalletClient } from '../utils/clients/ethereum';
 import { sleep } from '../utils/common';
-import { zkSyncLiteAbi } from '../data/abi/zkSyncLite';
+import { zkSyncLiteDepositAbi } from '../data/abi/zkSyncLiteDeposit';
 
 export class ZkSyncLiteDeposit {
   privateKey: Hex;
@@ -30,7 +30,7 @@ export class ZkSyncLiteDeposit {
       try {
         const txHash = await this.wallet.writeContract({
           address: this.depositContractAddress,
-          abi: zkSyncLiteAbi,
+          abi: zkSyncLiteDepositAbi,
           functionName: 'depositETH',
           value: value,
           args: [this.wallet.account.address],

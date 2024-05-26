@@ -1,4 +1,4 @@
-export const blurAbi = [
+export const blurDepositAbi = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
     anonymous: false,

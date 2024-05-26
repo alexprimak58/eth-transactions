@@ -4,7 +4,6 @@ import {
   getEthWalletClient,
   getPublicEthClient,
 } from '../utils/clients/ethereum';
-import { mintfunZerionContract } from '../data/mintfun-contract';
 import { binanceConfig } from '../config';
 import { sleep } from '../utils/common';
 import { submitTx } from '../utils/mintfun';
@@ -15,6 +14,7 @@ export class Mintfun {
   privateKey: Hex;
   logger: any;
   client: PublicClient;
+  nftContract: Hex = '0x932261f9fc8da46c4a22e31b45c4de60623848bf';
 
   constructor(privateKey: Hex) {
     this.privateKey = privateKey;
@@ -25,13 +25,11 @@ export class Mintfun {
   async mint() {
     const ethWallet = getEthWalletClient(this.privateKey);
 
-    const contract: Hex = mintfunZerionContract;
-
     let nftName = '';
 
     try {
       nftName = await this.client.readContract({
-        address: contract,
+        address: this.nftContract,
         abi: mintfunAbi,
         functionName: 'name',
       });
@@ -49,7 +47,7 @@ export class Mintfun {
     while (!isSuccess) {
       try {
         const txHash = await ethWallet.writeContract({
-          address: contract,
+          address: this.nftContract,
           abi: mintfunAbi,
           functionName: 'mint',
         });
@@ -82,7 +80,7 @@ export class Mintfun {
         } else {
           isSuccess = true;
           this.logger.info(
-            `${ethWallet.account.address} | mint unsuccessful, skip`
+            `${ethWallet.account.address} | Mint unsuccessful, skip`
           );
         }
       }

@@ -2,7 +2,7 @@ import { Hex, parseEther } from 'viem';
 import { makeLogger } from '../utils/logger';
 import { getEthWalletClient } from '../utils/clients/ethereum';
 import { sleep } from '../utils/common';
-import { baseBridgeAbi } from '../data/abi/base-bridge';
+import { baseBridgeAbi } from '../data/abi/baseBridge';
 
 export class BaseBridge {
   privateKey: Hex;

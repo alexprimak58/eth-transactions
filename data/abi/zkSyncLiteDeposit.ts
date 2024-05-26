@@ -1,4 +1,4 @@
-export const zkSyncLiteAbi = [
+export const zkSyncLiteDepositAbi = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
     anonymous: false,

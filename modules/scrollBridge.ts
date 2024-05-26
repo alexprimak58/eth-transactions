@@ -4,9 +4,9 @@ import {
   getEthWalletClient,
   getPublicEthClient,
 } from '../utils/clients/ethereum';
-import { scrollBridgeAbi } from '../data/abi/scroll-bridge';
+import { scrollBridgeAbi } from '../data/abi/scrollBridge';
 import { sleep } from '../utils/common';
-import { scrollFeeAbi } from '../data/abi/scroll-fee';
+import { scrollFeeAbi } from '../data/abi/scrollFee';
 
 export class ScrollBridge {
   privateKey: Hex;
