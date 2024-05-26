@@ -1,0 +1,82 @@
+export const swellDepositAbi = [
+  {
+    inputs: [
+      { internalType: 'address payable', name: '_weth', type: 'address' },
+      { internalType: 'address', name: '_wstETH', type: 'address' },
+      { internalType: 'address', name: '_weETH', type: 'address' },
+      { internalType: 'address', name: '_stakingContract', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  { inputs: [], name: 'AMOUNT_NULL', type: 'error' },
+  {
+    inputs: [],
+    name: 'eETH',
+    outputs: [{ internalType: 'contract IERC20', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: '_amount', type: 'uint256' }],
+    name: 'eETHZapIn',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'ethZapIn',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'stETH',
+    outputs: [{ internalType: 'contract IERC20', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: '_amount', type: 'uint256' }],
+    name: 'stETHZapIn',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'stakingContract',
+    outputs: [
+      {
+        internalType: 'contract ISimpleStakingERC20',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'weETH',
+    outputs: [{ internalType: 'contract IWeETH', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'weth',
+    outputs: [{ internalType: 'contract IWETH', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'wstETH',
+    outputs: [{ internalType: 'contract IWstETH', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const;
