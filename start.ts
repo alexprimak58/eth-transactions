@@ -22,7 +22,14 @@ import { WrapEth } from './modules/wrapEth';
 import { Bungee } from './modules/bungee';
 import { Mintfun } from './modules/mintfun';
 import { ZoraBridge } from './modules/zoraBridge';
-import { random, randomFloat, shuffle, sleep } from './utils/common';
+import {
+  random,
+  randomFloat,
+  shuffleModules,
+  shuffleWallets,
+  sleep,
+  weightedRandom,
+} from './utils/common';
 import { waitGas } from './utils/getCurrentGas';
 import { makeLogger } from './utils/logger';
 import { entryPoint } from './utils/menu';
@@ -41,7 +48,7 @@ import { SwellDeposit } from './modules/swellDeposit';
 let privateKeys = readWallets('./keys.txt');
 
 if (generalConfig.shuffleWallets) {
-  shuffle(privateKeys);
+  shuffleWallets(privateKeys);
 }
 
 async function customModule() {
@@ -83,6 +90,9 @@ async function customModule() {
           case 'zkSync Era':
             network = 'zkSyncEra';
             break;
+          case 'Linea':
+            network = 'Linea';
+            break;
         }
 
         const relayBridgeToEth = new RelayBridge(
@@ -97,6 +107,8 @@ async function customModule() {
         );
         logger.info(`Waiting ${sleepTime} sec until next module...`);
         await sleep(sleepTime * 1000);
+      } else {
+        logger.info(`Network not found.`);
       }
     }
 
@@ -106,9 +118,16 @@ async function customModule() {
         generalConfig.countModulesTo
       );
       let shuffledModules = generalConfig.shuffleCustomModules
-        ? shuffle(customModules)
+        ? shuffleModules(customModules)
         : customModules;
-      let userCustomModules = shuffledModules.slice(0, customModulesCount);
+
+      let userCustomModules = [];
+      for (let i = 0; i < customModulesCount; i++) {
+        const selectedModuleName = weightedRandom(shuffledModules);
+        if (selectedModuleName) {
+          userCustomModules.push(selectedModuleName);
+        }
+      }
 
       for (let customModuleItem of userCustomModules) {
         if (generalConfig.useBridge) {
