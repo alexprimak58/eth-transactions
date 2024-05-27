@@ -10,7 +10,6 @@ export const generalConfig = {
   shuffleWallets: false,
   shuffleCustomModules: true,
   maxGas: 15,
-  maxAddressTxCount: 100,
   countModulesFrom: 3,
   countModulesTo: 5,
   customModules: [
@@ -42,9 +41,19 @@ export const okxConfig = {
   passphrase: '',
   proxy: '',
   destNetwork: 'random', //or set 1 network
-  destNetworks: ['Arbitrum One', 'Base', 'Optimism', 'zkSync Era'],
+  destNetworks: ['Arbitrum One', 'Base', 'Optimism', 'zkSync Era', 'Linea'],
   coin: 'ETH',
   useRefill: false,
+};
+
+export const blastConfig = {
+  depositFrom: 0.00005,
+  depositTo: 0.00016,
+};
+
+export const blurConfig = {
+  depositFrom: 0.00005,
+  depositTo: 0.00016,
 };
 
 export const bungeeConfig = {
@@ -53,12 +62,12 @@ export const bungeeConfig = {
   destNetwork: 'random', //arbitrum, base, gnosis, optimism, zksync
 };
 
-export const blurConfig = {
+export const etherfiConfig = {
   depositFrom: 0.00005,
   depositTo: 0.00016,
 };
 
-export const zkSyncLiteConfig = {
+export const swellConfig = {
   depositFrom: 0.00005,
   depositTo: 0.00016,
 };
@@ -68,14 +77,9 @@ export const wrapConfig = {
   depositTo: 0.00016,
 };
 
-export const bridgeConfig = {
-  type: 'official',
-  stargateFrom: 'arbitrum', // 'arbitrum', 'optimism', 'random'
-  bridgeFrom: 0.001,
-  bridgeTo: 0.002,
-  stargateBridgeFrom: 0.003,
-  stargateBridgeTo: 0.004,
-  maxGas: 10, // for official bridge Eth -> Base
+export const zkSyncLiteConfig = {
+  depositFrom: 0.00005,
+  depositTo: 0.00016,
 };
 
 export const baseBridgeConfig = {
@@ -83,12 +87,22 @@ export const baseBridgeConfig = {
   bridgeTo: 0.00016,
 };
 
-export const zoraBridgeConfig = {
+export const lineaBridgeConfig = {
   bridgeFrom: 0.00005,
   bridgeTo: 0.00016,
 };
 
 export const scrollBridgeConfig = {
+  bridgeFrom: 0.00005,
+  bridgeTo: 0.00016,
+};
+
+export const zkSyncBridgeConfig = {
+  bridgeFrom: 0.00005,
+  bridgeTo: 0.00016,
+};
+
+export const zoraBridgeConfig = {
   bridgeFrom: 0.00005,
   bridgeTo: 0.00016,
 };
@@ -106,6 +120,10 @@ export const relayBridgeConfig = {
     {
       name: 'Base',
       id: 8453,
+    },
+    {
+      name: 'Linea',
+      id: 59144,
     },
     {
       name: 'Op',
@@ -126,6 +144,10 @@ export const relayBridgeConfig = {
     {
       name: 'Base',
       id: 8453,
+    },
+    {
+      name: 'Linea',
+      id: 59144,
     },
     {
       name: 'Op',

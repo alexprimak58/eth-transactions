@@ -1,13 +1,18 @@
 import {
   baseBridgeConfig,
   binanceConfig,
+  blastConfig,
   blurConfig,
   bungeeConfig,
+  etherfiConfig,
   generalConfig,
+  lineaBridgeConfig,
   okxConfig,
   relayBridgeConfig,
   scrollBridgeConfig,
+  swellConfig,
   wrapConfig,
+  zkSyncBridgeConfig,
   zkSyncLiteConfig,
   zoraBridgeConfig,
 } from './config';
@@ -27,217 +32,16 @@ import { ZkSyncLiteDeposit } from './modules/zkSyncLiteDeposit';
 import { ScrollBridge } from './modules/scrollBridge';
 import { OKX } from './modules/okx';
 import { RelayBridge } from './modules/relayBridge';
+import { LineaBridge } from './modules/lineaBridge';
+import { ZkSyncBridge } from './modules/zkSyncBridge';
+import { BlastDeposit } from './modules/blastDeposit';
+import { EtherfiDeposit } from './modules/etherfiDeposit';
+import { SwellDeposit } from './modules/swellDeposit';
 
 let privateKeys = readWallets('./keys.txt');
 
 if (generalConfig.shuffleWallets) {
   shuffle(privateKeys);
-}
-
-async function mintfunModule() {
-  const logger = makeLogger('Mintfun');
-  for (let privateKey of privateKeys) {
-    const mintfun = new Mintfun(privateKeyConvert(privateKey));
-
-    if (await waitGas()) {
-      await mintfun.mint();
-    }
-
-    const sleepTime = random(
-      generalConfig.sleepModulesFrom,
-      generalConfig.sleepModulesTo
-    );
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
-async function bungeeModule() {
-  const logger = makeLogger('Bungee');
-  for (let privateKey of privateKeys) {
-    const merkly = new Bungee(privateKeyConvert(privateKey));
-    const sum = randomFloat(bungeeConfig.refuelFrom, bungeeConfig.refuelTo);
-
-    if (await waitGas()) {
-      await merkly.refuel(sum.toString());
-    }
-
-    const sleepTime = random(
-      generalConfig.sleepModulesFrom,
-      generalConfig.sleepModulesTo
-    );
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
-async function blurDepositModule() {
-  const logger = makeLogger('Blur deposit');
-  for (let privateKey of privateKeys) {
-    const deposit = new BlurDeposit(privateKeyConvert(privateKey));
-    const sum = randomFloat(blurConfig.depositFrom, blurConfig.depositTo);
-
-    if (await waitGas()) {
-      await deposit.deposit(sum.toString());
-    }
-
-    const sleepTime = random(
-      generalConfig.sleepModulesFrom,
-      generalConfig.sleepModulesTo
-    );
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
-async function zkSyncLiteDepositModule() {
-  const logger = makeLogger('ZkSync Lite deposit');
-  for (let privateKey of privateKeys) {
-    const deposit = new ZkSyncLiteDeposit(privateKeyConvert(privateKey));
-    const sum = randomFloat(
-      zkSyncLiteConfig.depositFrom,
-      zkSyncLiteConfig.depositTo
-    );
-
-    if (await waitGas()) {
-      await deposit.deposit(sum.toString());
-    }
-
-    const sleepTime = random(
-      generalConfig.sleepModulesFrom,
-      generalConfig.sleepModulesTo
-    );
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
-async function wrapEthModule() {
-  const logger = makeLogger('Wrap eth');
-  for (let privateKey of privateKeys) {
-    const wrap = new WrapEth(privateKeyConvert(privateKey));
-    const sum = randomFloat(wrapConfig.depositFrom, wrapConfig.depositTo);
-
-    if (await waitGas()) {
-      await wrap.wrap(sum.toString());
-    }
-    const sleepTime = random(
-      generalConfig.sleepModulesFrom,
-      generalConfig.sleepModulesTo
-    );
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
-async function baseBridgeModule() {
-  const logger = makeLogger('Base bridge');
-  for (let privateKey of privateKeys) {
-    const bridge = new BaseBridge(privateKeyConvert(privateKey));
-    const sum = randomFloat(
-      baseBridgeConfig.bridgeFrom,
-      baseBridgeConfig.bridgeTo
-    );
-
-    if (await waitGas()) {
-      await bridge.bridge(sum.toString());
-    }
-
-    const sleepTime = random(
-      generalConfig.sleepModulesFrom,
-      generalConfig.sleepModulesTo
-    );
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
-async function zoraBridgeModule() {
-  const logger = makeLogger('Zora bridge');
-  for (let privateKey of privateKeys) {
-    const bridge = new ZoraBridge(privateKeyConvert(privateKey));
-    const sum = randomFloat(
-      zoraBridgeConfig.bridgeFrom,
-      zoraBridgeConfig.bridgeTo
-    );
-
-    if (await waitGas()) {
-      await bridge.bridge(sum.toString());
-    }
-
-    const sleepTime = random(
-      generalConfig.sleepModulesFrom,
-      generalConfig.sleepModulesTo
-    );
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
-async function scrollBridgeModule() {
-  const logger = makeLogger('Scroll bridge');
-  for (let privateKey of privateKeys) {
-    const bridge = new ScrollBridge(privateKeyConvert(privateKey));
-    const sum = randomFloat(
-      scrollBridgeConfig.bridgeFrom,
-      scrollBridgeConfig.bridgeTo
-    );
-
-    if (await waitGas()) {
-      await bridge.bridge(sum.toString());
-    }
-
-    const sleepTime = random(
-      generalConfig.sleepModulesFrom,
-      generalConfig.sleepModulesTo
-    );
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
-async function relayBridgeFromEthModule() {
-  const logger = makeLogger('Relay bridge');
-  for (let privateKey of privateKeys) {
-    const bridge = new RelayBridge(privateKeyConvert(privateKey));
-    const sum = randomFloat(
-      relayBridgeConfig.bridgeFrom,
-      relayBridgeConfig.bridgeTo
-    );
-
-    if (await waitGas()) {
-      await bridge.bridgeFromEth(sum.toString());
-    }
-
-    const sleepTime = random(
-      generalConfig.sleepModulesFrom,
-      generalConfig.sleepModulesTo
-    );
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
-}
-
-async function relayBridgeToEthModule() {
-  const logger = makeLogger('Relay bridge');
-  for (let privateKey of privateKeys) {
-    const bridge = new RelayBridge(privateKeyConvert(privateKey));
-    const sum = randomFloat(
-      relayBridgeConfig.bridgeFrom,
-      relayBridgeConfig.bridgeTo
-    );
-
-    if (await waitGas()) {
-      await bridge.bridgeToEth(sum.toString());
-    }
-
-    const sleepTime = random(
-      generalConfig.sleepModulesFrom,
-      generalConfig.sleepModulesTo
-    );
-    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-    await sleep(sleepTime * 1000);
-  }
 }
 
 async function customModule() {
@@ -451,20 +255,333 @@ async function customModule() {
   }
 }
 
+async function blastDepositModule() {
+  const logger = makeLogger('Blast deposit');
+  for (let privateKey of privateKeys) {
+    const blast = new BlastDeposit(privateKeyConvert(privateKey));
+    const sum = randomFloat(blastConfig.depositFrom, blastConfig.depositTo);
+
+    if (await waitGas()) {
+      await blast.deposit(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function blurDepositModule() {
+  const logger = makeLogger('Blur deposit');
+  for (let privateKey of privateKeys) {
+    const blur = new BlurDeposit(privateKeyConvert(privateKey));
+    const sum = randomFloat(blurConfig.depositFrom, blurConfig.depositTo);
+
+    if (await waitGas()) {
+      await blur.deposit(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function bungeeModule() {
+  const logger = makeLogger('Bungee');
+  for (let privateKey of privateKeys) {
+    const bungee = new Bungee(privateKeyConvert(privateKey));
+    const sum = randomFloat(bungeeConfig.refuelFrom, bungeeConfig.refuelTo);
+
+    if (await waitGas()) {
+      await bungee.refuel(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function etherfiDepositModule() {
+  const logger = makeLogger('Etherfi deposit');
+  for (let privateKey of privateKeys) {
+    const etherfi = new EtherfiDeposit(privateKeyConvert(privateKey));
+    const sum = randomFloat(etherfiConfig.depositFrom, etherfiConfig.depositTo);
+
+    if (await waitGas()) {
+      await etherfi.deposit(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function swellDepositModule() {
+  const logger = makeLogger('Swell deposit');
+  for (let privateKey of privateKeys) {
+    const swell = new SwellDeposit(privateKeyConvert(privateKey));
+    const sum = randomFloat(swellConfig.depositFrom, swellConfig.depositTo);
+
+    if (await waitGas()) {
+      await swell.deposit(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function wrapEthModule() {
+  const logger = makeLogger('Wrap eth');
+  for (let privateKey of privateKeys) {
+    const eth = new WrapEth(privateKeyConvert(privateKey));
+    const sum = randomFloat(wrapConfig.depositFrom, wrapConfig.depositTo);
+
+    if (await waitGas()) {
+      await eth.wrap(sum.toString());
+    }
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function zkSyncLiteDepositModule() {
+  const logger = makeLogger('ZkSync Lite deposit');
+  for (let privateKey of privateKeys) {
+    const zkSyncLite = new ZkSyncLiteDeposit(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      zkSyncLiteConfig.depositFrom,
+      zkSyncLiteConfig.depositTo
+    );
+
+    if (await waitGas()) {
+      await zkSyncLite.deposit(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function baseBridgeModule() {
+  const logger = makeLogger('Base bridge');
+  for (let privateKey of privateKeys) {
+    const base = new BaseBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      baseBridgeConfig.bridgeFrom,
+      baseBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await base.bridge(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function lineaBridgeModule() {
+  const logger = makeLogger('Linea bridge');
+  for (let privateKey of privateKeys) {
+    const linea = new LineaBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      lineaBridgeConfig.bridgeFrom,
+      lineaBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await linea.bridge(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function relayBridgeFromEthModule() {
+  const logger = makeLogger('Relay bridge');
+  for (let privateKey of privateKeys) {
+    const relay = new RelayBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      relayBridgeConfig.bridgeFrom,
+      relayBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await relay.bridgeFromEth(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function relayBridgeToEthModule() {
+  const logger = makeLogger('Relay bridge');
+  for (let privateKey of privateKeys) {
+    const relay = new RelayBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      relayBridgeConfig.bridgeFrom,
+      relayBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await relay.bridgeToEth(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function scrollBridgeModule() {
+  const logger = makeLogger('Scroll bridge');
+  for (let privateKey of privateKeys) {
+    const scroll = new ScrollBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      scrollBridgeConfig.bridgeFrom,
+      scrollBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await scroll.bridge(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function zoraBridgeModule() {
+  const logger = makeLogger('Zora bridge');
+  for (let privateKey of privateKeys) {
+    const zora = new ZoraBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      zoraBridgeConfig.bridgeFrom,
+      zoraBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await zora.bridge(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function zkSyncBridgeModule() {
+  const logger = makeLogger('ZkSync bridge');
+  for (let privateKey of privateKeys) {
+    const zkSync = new ZkSyncBridge(privateKeyConvert(privateKey));
+    const sum = randomFloat(
+      zkSyncBridgeConfig.bridgeFrom,
+      zkSyncBridgeConfig.bridgeTo
+    );
+
+    if (await waitGas()) {
+      await zkSync.bridge(sum.toString());
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function mintfunModule() {
+  const logger = makeLogger('Mintfun');
+  for (let privateKey of privateKeys) {
+    const mintfun = new Mintfun(privateKeyConvert(privateKey));
+
+    if (await waitGas()) {
+      await mintfun.mint();
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
 async function startMenu() {
   let mode = await entryPoint();
   switch (mode) {
-    case 'mintfun':
-      await mintfunModule();
+    case 'custom':
+      await customModule();
       break;
-    case 'bungee':
-      await bungeeModule();
-      break;
-    case 'wrap_eth':
-      await wrapEthModule();
+    case 'blast_deposit':
+      await blastDepositModule();
       break;
     case 'blur_deposit':
       await blurDepositModule();
+      break;
+    case 'etherfi_deposit':
+      await etherfiDepositModule();
+      break;
+    case 'swell_deposit':
+      await swellDepositModule();
+      break;
+    case 'wrap_eth':
+      await wrapEthModule();
       break;
     case 'zksync_lite_deposit':
       await zkSyncLiteDepositModule();
@@ -472,11 +589,11 @@ async function startMenu() {
     case 'base_bridge':
       await baseBridgeModule();
       break;
-    case 'zora_bridge':
-      await zoraBridgeModule();
+    case 'bungee':
+      await bungeeModule();
       break;
-    case 'scroll_bridge':
-      await scrollBridgeModule();
+    case 'linea_bridge':
+      await lineaBridgeModule();
       break;
     case 'relay_bridge_from_eth':
       await relayBridgeFromEthModule();
@@ -484,8 +601,17 @@ async function startMenu() {
     case 'relay_bridge_to_eth':
       await relayBridgeToEthModule();
       break;
-    case 'custom':
-      await customModule();
+    case 'scroll_bridge':
+      await scrollBridgeModule();
+      break;
+    case 'zora_bridge':
+      await zoraBridgeModule();
+      break;
+    case 'zksync_bridge':
+      await zkSyncBridgeModule();
+      break;
+    case 'mintfun':
+      await mintfunModule();
       break;
   }
 }
