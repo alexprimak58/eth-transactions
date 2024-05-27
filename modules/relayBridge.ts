@@ -8,13 +8,14 @@ import {
   createClient,
   getClient,
 } from '@reservoir0x/relay-sdk';
-import { arbitrum, base, mainnet, optimism, zkSync } from 'viem/chains';
+import { arbitrum, base, linea, mainnet, optimism, zkSync } from 'viem/chains';
 import { random, sleep } from '../utils/common';
 import { relayBridgeConfig } from '../config';
 import { getArbWalletClient } from '../utils/clients/arbitrum';
 import { getBaseWalletClient } from '../utils/clients/base';
 import { getOptWalletClient } from '../utils/clients/optimism';
 import { getZkWalletClient } from '../utils/clients/zkSync';
+import { getLineaWalletClient } from '../utils/clients/linea';
 
 interface Quote {
   fees: {
@@ -48,7 +49,13 @@ export class RelayBridge {
       );
     }
 
-    if (fromNetwork === 'random') {
+    if (!fromNetwork) {
+      this.fromNetwork = relayBridgeConfig.fromNetwork;
+    } else {
+      this.fromNetwork = fromNetwork;
+    }
+
+    if (this.fromNetwork === 'random') {
       this.fromNetwork =
         relayBridgeConfig.fromNetworks[
           random(0, relayBridgeConfig.fromNetworks.length - 1)
@@ -68,7 +75,10 @@ export class RelayBridge {
         this.wallet = getBaseWalletClient(privateKey);
         this.scanUrl = 'https://basescan.org/tx';
         break;
-
+      case 59144:
+        this.wallet = getLineaWalletClient(privateKey);
+        this.scanUrl = 'https://lineascan.build/tx';
+        break;
       case 10:
         this.wallet = getOptWalletClient(privateKey);
         this.scanUrl = 'https://optimistic.etherscan.io/tx';
@@ -88,6 +98,7 @@ export class RelayBridge {
         convertViemChainToRelayChain(base),
         convertViemChainToRelayChain(optimism),
         convertViemChainToRelayChain(zkSync),
+        convertViemChainToRelayChain(linea),
       ],
     });
   }
@@ -163,9 +174,7 @@ export class RelayBridge {
     this.logger.info(
       `${
         this.wallet.account.address
-      } | Relay bridge ${fromNetworkName} -> Ethereum ${formatEther(
-        value
-      )} ETH `
+      } | Relay bridge ${fromNetworkName} -> Ethereum ${formatEther(value)} ETH`
     );
 
     let isSuccess = false;
