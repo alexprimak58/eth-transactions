@@ -5,10 +5,9 @@ import {
   getPublicEthClient,
 } from '../utils/clients/ethereum';
 import { privateKeyToAccount } from 'viem/accounts';
-import { binanceConfig, bungeeConfig } from '../config';
+import { bungeeConfig } from '../config';
 import { random, sleep } from '../utils/common';
 import axios from 'axios';
-import { refill } from '../utils/refill';
 import { bungeeAbi } from '../data/abi/bungee';
 
 export class Bungee {
@@ -104,21 +103,11 @@ export class Bungee {
           `${this.walletAddress} | Success refuel to ${this.randomNetwork.name}: https://etherscan.io/tx/${txHash}`
         );
       } catch (error) {
-        this.logger.info(`${this.walletAddress} | Error ${error}`);
+        this.logger.info(`${this.walletAddress} | Error ${error.shortMessage}`);
 
         if (retryCount <= 3) {
-          if (retryCount === 1) {
-            if (
-              (error.shortMessage.includes('insufficient funds') ||
-                error.shortMessage.includes('exceeds the balance')) &&
-              binanceConfig.useRefill
-            ) {
-              await refill(this.privateKey);
-            }
-          }
-
           this.logger.info(
-            `${this.walletAddress} | Wait 30 sec and retry refuel ${retryCount}/3`
+            `${this.walletAddress} | Wait 30 sec and retry bridge ${retryCount}/3`
           );
           retryCount++;
           await sleep(30 * 1000);
@@ -126,6 +115,10 @@ export class Bungee {
           isSuccess = true;
           this.logger.info(`${this.walletAddress} | Refuel unsuccessful, skip`);
         }
+
+        this.logger.error(
+          `${this.walletAddress} | Bungee refuel error: ${error.shortMessage}`
+        );
       }
     }
   }

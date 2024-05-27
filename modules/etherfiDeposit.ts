@@ -43,7 +43,9 @@ export class EtherfiDeposit {
           `${this.wallet.account.address} | Success etherfi deposit: https://etherscan.io/tx/${txHash}`
         );
       } catch (error) {
-        this.logger.info(`${this.wallet.account.address} | Error ${error}`);
+        this.logger.info(
+          `${this.wallet.account.address} | Error ${error.shortMessage}`
+        );
 
         if (retryCount <= 3) {
           this.logger.info(

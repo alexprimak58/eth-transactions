@@ -131,7 +131,9 @@ export class RelayBridge {
           `${this.ethWallet.account.address} | Success bridge Ethereum -> ${destNetworkName}: https://etherscan.io/tx/${data.txHashes?.[0].txHash}`
         );
       } catch (error) {
-        this.logger.info(`${this.ethWallet.account.address} | Error ${error}`);
+        this.logger.info(
+          `${this.ethWallet.account.address} | Error ${error.shortMessage}`
+        );
 
         if (retryCount <= 3) {
           this.logger.info(
@@ -202,7 +204,9 @@ export class RelayBridge {
           },
         })) as ProgressData;
       } catch (error) {
-        this.logger.info(`${this.wallet.account.address} | Error ${error}`);
+        this.logger.info(
+          `${this.wallet.account.address} | Error ${error.shortMessage}`
+        );
 
         if (retryCount <= 3) {
           this.logger.info(

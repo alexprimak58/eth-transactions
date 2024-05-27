@@ -37,10 +37,12 @@ export class WrapEth {
         isSuccess = true;
 
         this.logger.info(
-          `${this.wallet.account.address} | Success wrap ETH -> WETH: https://etherscan.io/tx/${txHash}`
+          `${this.wallet.account.address} | Success wrap ETH: https://etherscan.io/tx/${txHash}`
         );
       } catch (error) {
-        this.logger.info(`${this.wallet.account.address} | Error ${error}`);
+        this.logger.info(
+          `${this.wallet.account.address} | Error ${error.shortMessage}`
+        );
 
         if (retryCount <= 3) {
           this.logger.info(
@@ -51,12 +53,12 @@ export class WrapEth {
         } else {
           isSuccess = true;
           this.logger.info(
-            `${this.wallet.account.address} | Wrap ETH -> WETH unsuccessful, skip`
+            `${this.wallet.account.address} | Wrap ETH unsuccessful, skip`
           );
         }
 
         this.logger.error(
-          `${this.wallet.account.address} | Wrap ETH -> WETH error: ${error.shortMessage}`
+          `${this.wallet.account.address} | Wrap ETH error: ${error.shortMessage}`
         );
       }
     }
