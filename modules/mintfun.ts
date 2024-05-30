@@ -24,6 +24,7 @@ export class Mintfun {
 
   async mint() {
     let nftName = '';
+    let numOfMints;
 
     try {
       nftName = await this.client.readContract({
@@ -37,44 +38,63 @@ export class Mintfun {
       );
     }
 
-    this.logger.info(`${this.wallet.account.address} | Mint «${nftName}»`);
+    try {
+      numOfMints = await this.client.readContract({
+        address: this.nftContract,
+        abi: mintfunAbi,
+        functionName: 'balanceOf',
+        args: [this.wallet.account.address],
+      });
+    } catch (error) {
+      this.logger.info(
+        `${this.wallet.account.address} | Error: ${error.shortMessage}`
+      );
+    }
 
-    let isSuccess = false;
-    let retryCount = 1;
+    if (Number(numOfMints) > 0) {
+      this.logger.info(
+        `${this.wallet.account.address} | «${nftName}» already minted`
+      );
+    } else {
+      this.logger.info(`${this.wallet.account.address} | Mint «${nftName}»`);
 
-    while (!isSuccess) {
-      try {
-        const txHash = await this.wallet.writeContract({
-          address: this.nftContract,
-          abi: mintfunAbi,
-          functionName: 'mint',
-        });
-        isSuccess = true;
-        this.logger.info(
-          `${this.wallet.account.address} | Success mint: https://etherscan.io/tx/${txHash}`
-        );
-        await submitTx(this.wallet.account.address, txHash);
-      } catch (error) {
-        this.logger.info(
-          `${this.wallet.account.address} | Error ${error.shortMessage}`
-        );
+      let isSuccess = false;
+      let retryCount = 1;
 
-        if (retryCount <= 3) {
-          this.logger.info(
-            `${this.wallet.account.address} | Wait 30 sec and retry mint ${retryCount}/3`
-          );
-          retryCount++;
-          await sleep(30 * 1000);
-        } else {
+      while (!isSuccess) {
+        try {
+          const txHash = await this.wallet.writeContract({
+            address: this.nftContract,
+            abi: mintfunAbi,
+            functionName: 'mint',
+          });
           isSuccess = true;
           this.logger.info(
-            `${this.wallet.account.address} | Mint unsuccessful, skip`
+            `${this.wallet.account.address} | Success mint: https://etherscan.io/tx/${txHash}`
+          );
+          await submitTx(this.wallet.account.address, txHash);
+        } catch (error) {
+          this.logger.info(
+            `${this.wallet.account.address} | Error ${error.shortMessage}`
+          );
+
+          if (retryCount <= 3) {
+            this.logger.info(
+              `${this.wallet.account.address} | Wait 30 sec and retry mint ${retryCount}/3`
+            );
+            retryCount++;
+            await sleep(30 * 1000);
+          } else {
+            isSuccess = true;
+            this.logger.info(
+              `${this.wallet.account.address} | Mint unsuccessful, skip`
+            );
+          }
+
+          this.logger.error(
+            `${this.wallet.account.address} | Mint error: ${error.shortMessage}`
           );
         }
-
-        this.logger.error(
-          `${this.wallet.account.address} | Mint error: ${error.shortMessage}`
-        );
       }
     }
   }
