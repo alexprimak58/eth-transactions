@@ -20,7 +20,7 @@ import { BaseBridge } from './modules/baseBridge';
 import { Binance } from './modules/binance';
 import { WrapEth } from './modules/wrapEth';
 import { Bungee } from './modules/bungee';
-import { Mintfun } from './modules/mintfun';
+import { MintZerionDna } from './modules/zerionDnaMint';
 import { ZoraBridge } from './modules/zoraBridge';
 import {
   random,
@@ -44,6 +44,32 @@ import { ZkSyncBridge } from './modules/zkSyncBridge';
 import { BlastDeposit } from './modules/blastDeposit';
 import { EtherfiDeposit } from './modules/etherfiDeposit';
 import { SwellDeposit } from './modules/swellDeposit';
+import { MintScalingLens } from './modules/scalingLensMint';
+import { bridgeModules, depositModules, mintModules } from './setter';
+
+const moduleFunctions = {
+  base_bridge: baseBridgeModule,
+  linea_bridge: lineaBridgeModule,
+  scroll_bridge: scrollBridgeModule,
+  zora_bridge: zoraBridgeModule,
+  zksync_bridge: zkSyncBridgeModule,
+  relay_bridge_from_eth: relayBridgeFromEthModule,
+  relay_bridge_to_eth: relayBridgeToEthModule,
+  blast_deposit: blastDepositModule,
+  blur_deposit: blurDepositModule,
+  etherfi_deposit: etherfiDepositModule,
+  swell_deposit: swellDepositModule,
+  wrap_eth: wrapEthModule,
+  zksync_lite_deposit: zkSyncLiteDepositModule,
+  mint_zerion_dna: mintZerionDnaModule,
+  mint_scaling_lens: mintScalingLensModule,
+};
+
+interface ModuleFunctions {
+  [key: string]: () => Promise<void>;
+}
+
+const typedModuleFunctions: ModuleFunctions = moduleFunctions;
 
 let privateKeys = readWallets('./keys.txt');
 
@@ -53,7 +79,6 @@ if (generalConfig.shuffleWallets) {
 
 async function customModule() {
   const logger = makeLogger('Custom');
-  let customModules = generalConfig.customModules;
 
   for (let privateKey of privateKeys) {
     let network;
@@ -117,143 +142,52 @@ async function customModule() {
         generalConfig.countModulesFrom,
         generalConfig.countModulesTo
       );
+
+      let availableModules = generalConfig.customModules.filter((module) => {
+        if (bridgeModules.has(module.name) && !generalConfig.useBridges)
+          return false;
+        if (depositModules.has(module.name) && !generalConfig.useDeposits)
+          return false;
+        if (mintModules.has(module.name) && !generalConfig.useMints)
+          return false;
+        return true;
+      });
+
       let shuffledModules = generalConfig.shuffleCustomModules
-        ? shuffleModules(customModules)
-        : customModules;
+        ? shuffleModules(availableModules)
+        : availableModules;
 
       let userCustomModules = [];
+      let moduleWeights = new Map();
+
+      availableModules.forEach((module) =>
+        moduleWeights.set(module.name, module.weight)
+      );
+
       for (let i = 0; i < customModulesCount; i++) {
-        const selectedModuleName = weightedRandom(shuffledModules);
-        if (selectedModuleName) {
-          userCustomModules.push(selectedModuleName);
+        const selectedModule = weightedRandom(shuffledModules);
+        if (selectedModule) {
+          userCustomModules.push(selectedModule);
+          const currentWeight = moduleWeights.get(selectedModule.name);
+          moduleWeights.set(selectedModule.name, currentWeight / 2);
+
+          shuffledModules = shuffledModules.map((module) => ({
+            ...module,
+            weight: moduleWeights.get(module.name),
+          }));
         }
       }
 
-      for (let customModuleItem of userCustomModules) {
-        if (generalConfig.useBridge) {
-          switch (customModuleItem) {
-            case 'mintfun':
-              const mintfun = new Mintfun(privateKeyConvert(privateKey));
-              await mintfun.mint();
-              break;
-            case 'relay_bridge_from_eth':
-              const relaySumFromEth = randomFloat(
-                relayBridgeConfig.bridgeFrom,
-                relayBridgeConfig.bridgeTo
-              );
-              const relayBridgeFromEth = new RelayBridge(
-                privateKeyConvert(privateKey)
-              );
-              await relayBridgeFromEth.bridgeFromEth(
-                relaySumFromEth.toString()
-              );
-              break;
-            case 'scroll_bridge':
-              const scrollSum = randomFloat(
-                scrollBridgeConfig.bridgeFrom,
-                scrollBridgeConfig.bridgeTo
-              );
-              const scrollBridge = new ScrollBridge(
-                privateKeyConvert(privateKey)
-              );
-              await scrollBridge.bridge(scrollSum.toString());
-              break;
-            case 'zora_bridge':
-              const zoraSum = randomFloat(
-                zoraBridgeConfig.bridgeFrom,
-                zoraBridgeConfig.bridgeTo
-              );
-              const zoraBridge = new ZoraBridge(privateKeyConvert(privateKey));
-              await zoraBridge.bridge(zoraSum.toString());
-              break;
-            case 'base_bridge':
-              const baseSum = randomFloat(
-                baseBridgeConfig.bridgeFrom,
-                baseBridgeConfig.bridgeTo
-              );
-              const baseBridge = new BaseBridge(privateKeyConvert(privateKey));
-              await baseBridge.bridge(baseSum.toString());
-              break;
-            case 'wrap_eth':
-              const wrapSum = randomFloat(
-                wrapConfig.depositFrom,
-                wrapConfig.depositTo
-              );
-              const wrapEth = new WrapEth(privateKeyConvert(privateKey));
-              await wrapEth.wrap(wrapSum.toString());
-              break;
-            case 'bungee':
-              const bungeeSum = randomFloat(
-                bungeeConfig.refuelFrom,
-                bungeeConfig.refuelTo
-              );
-              const bungee = new Bungee(privateKeyConvert(privateKey));
-              await bungee.refuel(bungeeSum.toString());
-              break;
-            case 'zksync_lite_deposit':
-              const zkSum = randomFloat(
-                zkSyncLiteConfig.depositFrom,
-                zkSyncLiteConfig.depositTo
-              );
-              const zkSyncLiteDeposit = new ZkSyncLiteDeposit(
-                privateKeyConvert(privateKey)
-              );
-              await zkSyncLiteDeposit.deposit(zkSum.toString());
-              break;
-            case 'blur_deposit':
-              const blurSum = randomFloat(
-                blurConfig.depositFrom,
-                blurConfig.depositTo
-              );
-              const blurDeposit = new BlurDeposit(
-                privateKeyConvert(privateKey)
-              );
-              await blurDeposit.deposit(blurSum.toString());
-              break;
-          }
+      for (let module of userCustomModules) {
+        const moduleName = module.name;
+        if (bridgeModules.has(moduleName)) {
+          await typedModuleFunctions[moduleName]();
+        } else if (depositModules.has(moduleName)) {
+          await typedModuleFunctions[moduleName]();
+        } else if (mintModules.has(moduleName)) {
+          await typedModuleFunctions[moduleName]();
         } else {
-          switch (customModuleItem) {
-            case 'mintfun':
-              const mintfun = new Mintfun(privateKeyConvert(privateKey));
-              await mintfun.mint();
-              break;
-            case 'wrap_eth':
-              const wrapSum = randomFloat(
-                wrapConfig.depositFrom,
-                wrapConfig.depositTo
-              );
-              const wrapEth = new WrapEth(privateKeyConvert(privateKey));
-              await wrapEth.wrap(wrapSum.toString());
-              break;
-            case 'bungee':
-              const bungeeSum = randomFloat(
-                bungeeConfig.refuelFrom,
-                bungeeConfig.refuelTo
-              );
-              const bungee = new Bungee(privateKeyConvert(privateKey));
-              await bungee.refuel(bungeeSum.toString());
-              break;
-            case 'zksync_lite_deposit':
-              const zkSum = randomFloat(
-                zkSyncLiteConfig.depositFrom,
-                zkSyncLiteConfig.depositTo
-              );
-              const zkSyncLiteDeposit = new ZkSyncLiteDeposit(
-                privateKeyConvert(privateKey)
-              );
-              await zkSyncLiteDeposit.deposit(zkSum.toString());
-              break;
-            case 'blur_deposit':
-              const blurSum = randomFloat(
-                blurConfig.depositFrom,
-                blurConfig.depositTo
-              );
-              const blurDeposit = new BlurDeposit(
-                privateKeyConvert(privateKey)
-              );
-              await blurDeposit.deposit(blurSum.toString());
-              break;
-          }
+          logger.info(`Module ${moduleName} is disabled by configuration.`);
         }
 
         sleepTime = random(
@@ -563,13 +497,31 @@ async function zkSyncBridgeModule() {
   }
 }
 
-async function mintfunModule() {
-  const logger = makeLogger('Mintfun');
+async function mintZerionDnaModule() {
+  const logger = makeLogger('Mint Zerion DNA');
   for (let privateKey of privateKeys) {
-    const mintfun = new Mintfun(privateKeyConvert(privateKey));
+    const zerionDna = new MintZerionDna(privateKeyConvert(privateKey));
 
     if (await waitGas()) {
-      await mintfun.mint();
+      await zerionDna.mint();
+    }
+
+    const sleepTime = random(
+      generalConfig.sleepModulesFrom,
+      generalConfig.sleepModulesTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
+  }
+}
+
+async function mintScalingLensModule() {
+  const logger = makeLogger('Mint Scaling Lens');
+  for (let privateKey of privateKeys) {
+    const scalingLens = new MintScalingLens(privateKeyConvert(privateKey));
+
+    if (await waitGas()) {
+      await scalingLens.mint();
     }
 
     const sleepTime = random(
@@ -629,8 +581,11 @@ async function startMenu() {
     case 'zksync_bridge':
       await zkSyncBridgeModule();
       break;
-    case 'mintfun':
-      await mintfunModule();
+    case 'mint_zerion_dna':
+      await mintZerionDnaModule();
+      break;
+    case 'mint_scaling_lens':
+      await mintScalingLensModule();
       break;
   }
 }

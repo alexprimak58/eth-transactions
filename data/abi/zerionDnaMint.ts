@@ -1,4 +1,4 @@
-export const mintfunAbi = [
+export const zerionDnaAbi = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
     anonymous: false,

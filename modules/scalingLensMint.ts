@@ -1,35 +1,49 @@
-import { Hex, PublicClient } from 'viem';
+import { Hex, PublicClient, encodeAbiParameters } from 'viem';
 import { makeLogger } from '../utils/logger';
 import {
   getEthWalletClient,
   getPublicEthClient,
 } from '../utils/clients/ethereum';
 import { sleep } from '../utils/common';
-import { submitTx } from '../utils/mintfun';
-import { mintfunAbi } from '../data/abi/mintfun';
+import { zoraErc1155Abi } from '../data/abi/zoraErc1155';
 
-export class Mintfun {
+export class MintScalingLens {
   privateKey: Hex;
   logger: any;
   wallet: any;
   client: PublicClient;
-  nftContract: Hex = '0x932261f9fc8da46c4a22e31b45c4de60623848bf';
+  zoraCreator: Hex = '0x04E2516A2c207E84a1839755675dfd8eF6302F0a';
+  zoraLink: Hex = '0x2CC0B05E01D3E5a8946C2E6246550E6694fc8797';
+  nftContract: Hex = '0x3d4914b0917fe61379aec014e6ebc2664182cfc6';
 
   constructor(privateKey: Hex) {
     this.privateKey = privateKey;
-    this.logger = makeLogger('Mint');
+    this.logger = makeLogger('Mint Scaling Lens');
     this.client = getPublicEthClient();
     this.wallet = getEthWalletClient(this.privateKey);
   }
 
+  encodeArguments = (address: any, comment: any) => {
+    const encodedParams = encodeAbiParameters(
+      [
+        { name: 'mintTo', type: 'address' },
+        { name: 'comment', type: 'string' },
+      ],
+      [address, comment]
+    );
+
+    return encodedParams;
+  };
+
   async mint() {
-    let nftName = '';
+    let nftName;
     let numOfMints;
+    let mintFee;
 
     try {
       nftName = await this.client.readContract({
         address: this.nftContract,
-        abi: mintfunAbi,
+        abi: zoraErc1155Abi,
         functionName: 'name',
       });
     } catch (error) {
@@ -41,9 +55,9 @@ export class Mintfun {
     try {
       numOfMints = await this.client.readContract({
         address: this.nftContract,
-        abi: mintfunAbi,
+        abi: zoraErc1155Abi,
         functionName: 'balanceOf',
-        args: [this.wallet.account.address],
+        args: [this.wallet.account.address, BigInt(1)],
       });
     } catch (error) {
       this.logger.info(
@@ -56,6 +70,23 @@ export class Mintfun {
         `${this.wallet.account.address} | «${nftName}» already minted`
       );
     } else {
+      try {
+        mintFee = await this.client.readContract({
+          address: this.nftContract,
+          abi: zoraErc1155Abi,
+          functionName: 'mintFee',
+        });
+      } catch (error) {
+        this.logger.info(
+          `${this.wallet.account.address} | Error: ${error.shortMessage}`
+        );
+      }
+
+      const inputText = '';
+      const address = this.wallet.account.address;
+
+      const encodedArguments = this.encodeArguments(address, inputText);
+
       this.logger.info(`${this.wallet.account.address} | Mint «${nftName}»`);
 
       let isSuccess = false;
@@ -65,14 +96,15 @@ export class Mintfun {
         try {
           const txHash = await this.wallet.writeContract({
             address: this.nftContract,
-            abi: mintfunAbi,
+            abi: zoraErc1155Abi,
             functionName: 'mint',
+            args: [this.zoraCreator, 1, 1, [this.zoraLink], encodedArguments],
+            value: Number(mintFee),
           });
           isSuccess = true;
           this.logger.info(
             `${this.wallet.account.address} | Success mint: https://etherscan.io/tx/${txHash}`
           );
-          await submitTx(this.wallet.account.address, txHash);
         } catch (error) {
           this.logger.info(
             `${this.wallet.account.address} | Error ${error.shortMessage}`

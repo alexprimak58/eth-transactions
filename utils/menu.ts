@@ -67,7 +67,8 @@ export const entryPoint = async (): Promise<any> => {
       type: 'list',
       message: 'Choose a mint:',
       choices: [
-        { name: 'Mint Zerion DNA', value: 'mintfun' },
+        { name: 'Mint Zerion DNA', value: 'mint_zerion_dna' },
+        { name: 'Mint Scaling Lens', value: 'mint_scaling_lens' },
         { name: '🔙 Back', value: 'back' },
       ],
       loop: false,

@@ -2,14 +2,14 @@
 
 ## Overview
 
-A script for performing various Ethereum transactions. All settings are located in the ```config.ts```.
+A script for performing various Ethereum transactions. All settings are located in the `config.ts`.
 
 ## Features
 
 - **Cex**: OKX and Binance.
 - **Deposits**: Blast, Blur, EtherFi, Swell, ZkSyncLite.
 - **Bridges**: Base, Bungee, Linea, Relay, Scroll, ZkSync, Zora.
-- **Mints**: Zerion DNA.
+- **Mints**: Zerion DNA, Scaling Lens.
 
 ## Requirements
 
@@ -18,29 +18,30 @@ A script for performing various Ethereum transactions. All settings are located 
 ## Installation
 
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/sent1ne/eth-transactions.git
-    ```
+   ```bash
+   git clone https://github.com/sent1ne/eth-transactions.git
+   ```
 2. Navigate to the project directory:
-    ```bash
-    cd eth-transactions
-    ```
+
+   ```bash
+   cd eth-transactions
+   ```
 
 3. Install the required libraries:
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
 ## Usage
 
 1. Create a txt file named keys and insert the private keys:
-    ```bash
-    nano keys
-    ```
+   ```bash
+   nano keys
+   ```
 2. Run the script:
-    ```bash
-    npm start
-    ```
+   ```bash
+   npm start
+   ```
 
 ## Contact
 

@@ -14,16 +14,17 @@ export function randomFloat(min: number, max: number): number {
 }
 
 export function weightedRandom(modules: Module[]) {
-  let totalWeight = modules.reduce((acc, module) => acc + module.weight, 0);
-  let randomNum = randomFloat(0, totalWeight);
-  let weightSum = 0;
+  const totalWeight = modules.reduce((sum, module) => sum + module.weight, 0);
+  let randomNum = Math.random() * totalWeight;
 
   for (let module of modules) {
-    weightSum += module.weight;
-    if (randomNum <= weightSum) {
-      return module.name;
+    randomNum -= module.weight;
+    if (randomNum <= 0) {
+      return module;
     }
   }
+
+  return null;
 }
 
 export const sleep = async (ms: number): Promise<void> =>
