@@ -45,31 +45,12 @@ import { BlastDeposit } from './modules/blastDeposit';
 import { EtherfiDeposit } from './modules/etherfiDeposit';
 import { SwellDeposit } from './modules/swellDeposit';
 import { MintScalingLens } from './modules/scalingLensMint';
-import { bridgeModules, depositModules, mintModules } from './setter';
-
-const moduleFunctions = {
-  base_bridge: baseBridgeModule,
-  linea_bridge: lineaBridgeModule,
-  scroll_bridge: scrollBridgeModule,
-  zora_bridge: zoraBridgeModule,
-  zksync_bridge: zkSyncBridgeModule,
-  relay_bridge_from_eth: relayBridgeFromEthModule,
-  relay_bridge_to_eth: relayBridgeToEthModule,
-  blast_deposit: blastDepositModule,
-  blur_deposit: blurDepositModule,
-  etherfi_deposit: etherfiDepositModule,
-  swell_deposit: swellDepositModule,
-  wrap_eth: wrapEthModule,
-  zksync_lite_deposit: zkSyncLiteDepositModule,
-  mint_zerion_dna: mintZerionDnaModule,
-  mint_scaling_lens: mintScalingLensModule,
-};
-
-interface ModuleFunctions {
-  [key: string]: () => Promise<void>;
-}
-
-const typedModuleFunctions: ModuleFunctions = moduleFunctions;
+import {
+  bridgeModules,
+  depositModules,
+  mintModules,
+  moduleActions,
+} from './setter';
 
 let privateKeys = readWallets('./keys.txt');
 
@@ -178,14 +159,20 @@ async function customModule() {
         }
       }
 
+      const shouldProcess = (moduleName: string) => {
+        if (generalConfig.useBridges && bridgeModules.has(moduleName))
+          return true;
+        if (generalConfig.useDeposits && depositModules.has(moduleName))
+          return true;
+        if (generalConfig.useMints && mintModules.has(moduleName)) return true;
+        return false;
+      };
+
       for (let module of userCustomModules) {
         const moduleName = module.name;
-        if (bridgeModules.has(moduleName)) {
-          await typedModuleFunctions[moduleName]();
-        } else if (depositModules.has(moduleName)) {
-          await typedModuleFunctions[moduleName]();
-        } else if (mintModules.has(moduleName)) {
-          await typedModuleFunctions[moduleName]();
+
+        if (shouldProcess(moduleName) && moduleActions[moduleName]) {
+          await moduleActions[moduleName](privateKeyConvert(privateKey));
         } else {
           logger.info(`Module ${moduleName} is disabled by configuration.`);
         }
@@ -197,14 +184,14 @@ async function customModule() {
         logger.info(`Waiting ${sleepTime} sec until next module...`);
         await sleep(sleepTime * 1000);
       }
-
-      sleepTime = random(
-        generalConfig.sleepWalletsFrom,
-        generalConfig.sleepWalletsTo
-      );
-      logger.info(`Waiting ${sleepTime} sec until next wallet...`);
-      await sleep(sleepTime * 1000);
     }
+
+    sleepTime = random(
+      generalConfig.sleepWalletsFrom,
+      generalConfig.sleepWalletsTo
+    );
+    logger.info(`Waiting ${sleepTime} sec until next wallet...`);
+    await sleep(sleepTime * 1000);
   }
 }
 
